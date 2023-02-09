@@ -1,0 +1,24 @@
+{
+  "name": "@archilogic/bi-plugins",
+  "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
+  "author": "Archilogic",
+  "license": "",
+  "dependencies": {
+    "@archilogic/floor-plan-sdk": "^5.0.0-beta.0",
+    "javascript-color-gradient": "^2.4.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "prettier": "2.5.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "4.5.4"
+  },
+  "lint-staged": {
+    "*": "prettier -w -u"
+  },
+  "prettier": "@archilogic/prettier"
+}

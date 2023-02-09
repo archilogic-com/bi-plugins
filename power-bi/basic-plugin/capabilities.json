@@ -1,0 +1,113 @@
+{
+  "dataRoles": [
+    {
+      "displayName": "Category Data",
+      "name": "category",
+      "kind": "Grouping",
+      "description": "Which field contains the Resource ID?",
+      "preferredTypes": [
+        {
+          "text": true
+        }
+      ]
+    },
+    {
+      "displayName": "Measure Data",
+      "name": "measure",
+      "kind": "Measure",
+      "description": "Which field contains the values (*must be numerical)?",
+      "requiredTypes": [
+        {
+          "numeric": true
+        },
+        {
+          "integer": true
+        }
+      ]
+    }
+  ],
+  "dataViewMappings": [
+    {
+      "conditions": [
+        {
+          "category": {
+            "max": 1
+          },
+          "measure": {
+            "max": 1
+          }
+        }
+      ],
+      "categorical": {
+        "categories": {
+          "for": {
+            "in": "category"
+          },
+          "dataReductionAlgorithm": {
+            "top": {}
+          }
+        },
+        "values": {
+          "select": [
+            {
+              "bind": {
+                "to": "measure"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "objects": {
+    "archilogicPlugin": {
+      "properties": {
+        "publishableToken": {
+          "description": "Paste Archilogic Publishable Token here",
+          "type": {
+            "text": true
+          }
+        },
+        "floorID": {
+          "description": "Paste Archilogic Floor ID here",
+          "type": {
+            "text": true
+          }
+        }
+      }
+    },
+    "enableLegend": {
+      "properties": {
+        "show": {
+          "displayName": "Show",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "dataPoint": {
+      "displayName": "Fill Color",
+      "properties": {
+        "defaultColor": {
+          "displayName": "Color",
+          "description": "The fill color of space resources.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "privileges": [
+    {
+      "name": "WebAccess",
+      "essential": true,
+      "parameters": ["https://*.archilogic.com", "https://storage.3d.io"]
+    }
+  ]
+}
