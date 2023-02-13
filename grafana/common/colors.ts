@@ -1,4 +1,4 @@
-import { generateGradients } from '../../../../global';
+import { generateGradients } from '@bi-plugin-utils';
 import { createTheme } from '@grafana/data';
 
 const theme = createTheme();
@@ -9,7 +9,6 @@ export function getGrafanaHexColorByName(name: string) {
   colors.forEach((color) => {
     color.shades.forEach((shade) => {
       if (shade.name === name) {
-        // @ts-ignore-next-line
         finalColor = shade.color;
       }
     });

@@ -12,6 +12,8 @@ import { Observable, merge } from 'rxjs';
 import { MyQuery, MyDataSourceOptions, DEFAULT_QUERY } from './types';
 import { getNodeIdsFromScene, randomIntFromInterval } from './helpers/utils';
 
+const DATA_INTERVAL_TIME = 2000;
+
 export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>) {
     super(instanceSettings);
@@ -56,7 +58,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
             key: target.refId,
             state: LoadingState.Streaming,
           });
-        }, 500);
+        }, DATA_INTERVAL_TIME);
 
         return () => {
           clearInterval(intervalId);

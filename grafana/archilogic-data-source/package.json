@@ -1,17 +1,15 @@
 {
-  "name": "archilogic-plugin",
+  "name": "archilogic-datasource",
   "version": "1.0.0",
-  "description": "Floor Plan visualization",
+  "description": "Generate example data for archilogic plugin",
   "scripts": {
-    "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
-    "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
+    "build": "webpack -c ./webpack.config.ts --env production",
+    "dev": "webpack -w -c ./webpack.config.ts --env development",
     "test": "jest --watch --onlyChanged",
     "test:ci": "jest --maxWorkers 4",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --cache --ignore-path ./.gitignore --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn lint --fix",
-    "e2e": "yarn cypress install && yarn grafana-e2e run",
-    "e2e:update": "yarn cypress install && yarn grafana-e2e run --update-screenshots",
     "server": "docker-compose up --build",
     "sign": "npx --yes @grafana/sign-plugin"
   },
@@ -70,11 +68,7 @@
     "@grafana/data": "9.2.5",
     "@grafana/runtime": "9.2.5",
     "@grafana/ui": "9.2.5",
-    "@mars3d/heatmap.js": "^2.0.7",
-    "axios": "^1.2.1",
-    "javascript-color-gradient": "^2.4.4",
     "react": "17.0.2",
-    "react-color": "^2.19.3",
     "react-dom": "17.0.2"
   }
 }

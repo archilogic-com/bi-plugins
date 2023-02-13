@@ -1,26 +1,27 @@
 import React, { useEffect } from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
-import '@/components/FloorPlan/FloorPlan.css'
+import './FloorPlan.css'
 
 interface FloorOptions {
   id: string
   token: string
   startupOptions?: any
+  loaded?: boolean
   onLoad?: (floorPlan: FloorPlanEngine) => void
 }
 
+const FLOOR_PLAN_ID = 'floor-plan'
 let floorPlan: FloorPlanEngine
-let isFloorPlanLoaded = false
 
 const FloorPanel: React.FC<FloorOptions> = props => {
   const tokenOptions = {
     publishableAccessToken: props.token
   }
-  const onLoaded = props.onLoad || function () {}
+
   const initFloorPlan = () => {
-    const container = document.getElementById('floor-plan')
+    const container = document.getElementById(FLOOR_PLAN_ID)
     if (container) {
-      if (!isFloorPlanLoaded) {
+      if (!props.loaded) {
         floorPlan = new FloorPlanEngine({ container, options: props.startupOptions })
         floorPlan.loadScene(props.id, tokenOptions).then(() => {
           if (props.onLoad) props.onLoad(floorPlan)
@@ -34,7 +35,7 @@ const FloorPanel: React.FC<FloorOptions> = props => {
 
   return (
     <div className="plan-wrapper">
-      <div id="floor-plan" className="plan-container"></div>
+      <div id={FLOOR_PLAN_ID} className="plan-container"></div>
     </div>
   )
 }

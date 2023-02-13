@@ -1,0 +1,12 @@
+{
+  "name": "archilogic-grafana-common",
+  "version": "1.0.0",
+  "description": "Floor Plan visualization",
+  "author": "archilogic",
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "@grafana/data": "9.2.5"
+  }
+}

@@ -2,7 +2,7 @@ version: '3.0'
 
 services:
   grafana:
-    container_name: 'archilogic-floorplan-panel'
+    container_name: 'archilogic-data-source'
     build:
       context: ./.config
       args:
@@ -10,5 +10,5 @@ services:
     ports:
       - 3000:3000/tcp
     volumes:
-      - ./dist:/var/lib/grafana/plugins/archilogic-floorplan-panel
+      - ./dist:/var/lib/grafana/plugins/archilogic-data-source
       - ./provisioning:/etc/grafana/provisioning

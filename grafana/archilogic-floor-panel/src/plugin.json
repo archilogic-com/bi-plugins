@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "panel",
   "name": "Archilogic Plugin",
-  "id": "archilogic-floorplan-panel",
+  "id": "archilogic-floor-panel",
   "info": {
     "keywords": ["panel"],
     "description": "Floor Plan Visualization",
