@@ -34,7 +34,7 @@ export class QueryEditor extends PureComponent<Props> {
   };
 
   render() {
-    const { minValue, maxValue, token, floorId } = this.props.query;
+    const { token, floorId } = this.props.query;
 
     return (
       <div className="gf-form">
@@ -42,22 +42,6 @@ export class QueryEditor extends PureComponent<Props> {
           <FormField labelWidth={8} value={floorId || ''} onChange={this.onFloorIdChange} label="Floor plan ID" />
           <FormField labelWidth={8} value={token || ''} onChange={this.onTokenChange} label="Publishable Token" />
         </div>
-        {/* <div className="gf-form-group">
-          <FormField
-            labelWidth={6}
-            value={minValue || 0}
-            typeof="number"
-            onChange={this.onMinValue}
-            label="Min value"
-          />
-          <FormField
-            labelWidth={6}
-            value={maxValue || 10}
-            typeof="number"
-            onChange={this.onMaxValue}
-            label="Max value"
-          />
-        </div> */}
       </div>
     );
   }
