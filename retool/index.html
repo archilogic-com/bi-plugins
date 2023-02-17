@@ -1,0 +1,273 @@
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #react {
+    height: 100%;
+  }
+</style>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://code.archilogic.com/fpe-sdk/v3.1.x/fpe.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsgradient/1.0.0/jsgradient.min.js"></script>
+
+<div id="react"></div>
+
+<script type="text/babel">
+  
+  function clamp(input, min, max) {
+    return input < min ? min : input > max ? max : input
+  }
+  function map(current, in_min, in_max, out_min, out_max) {
+    const mapped = ((current - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min
+    return clamp(mapped, out_min, out_max)
+  }
+
+  function findMinMax(spaceData) {
+    let max = -Infinity;
+    let min = Infinity;
+    for (let i = 0; i < spaceData.length; i++) {
+      let current = spaceData[i];
+      if (current.value > max) {
+        max = current.value;
+      }
+      if (current.value < min) {
+        min = current.value;
+      }
+    }
+    return { max, min };
+  }
+
+  let spaceColorObjects = []
+  let defaultColors = {
+    work: [159, 188, 255],
+    meet: [121, 204, 205],
+    socialize: [241, 102, 100],
+    other: [255, 255, 255]
+  }
+  
+  let spaceData
+  let midPoints = 10
+  let minColor
+  let maxColor
+  let outMin = 0
+  let outMax = midPoints - 1
+  
+  function convertRGBStringToArray(rgbString) {
+    return rgbString
+      .replace(/rgb\(|\)/g, "")
+      .split(",")
+      .map(function(item) {
+        return parseInt(item.trim(), 10);
+      });
+  }
+  function valueToHex(c) {
+    var hex = c.toString(16)
+    return hex
+  }
+  function rgbToHex(rgbArray) {
+    return valueToHex(rgbArray[0]) + valueToHex(rgbArray[1]) + valueToHex(rgbArray[2])
+  }
+
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null
+  }
+  
+  function initializeGradients(minColor, maxColor) {
+    const rgbMin = convertRGBStringToArray(minColor)
+    const rgbMax = convertRGBStringToArray(maxColor)
+    const hexMin = rgbToHex(rgbMin)
+    const hexMax = rgbToHex(rgbMax)
+    const gradientColors = new JSGradient([`#${hexMin}`, `#${hexMax}`], midPoints);
+    return gradientColors
+  }
+
+  function arrayEquals(array1, array2){
+    if (JSON.stringify(array1) === JSON.stringify(array2)){
+      return true
+    } else {
+      return false
+    }
+  }
+  
+  const startupSettings = {
+    planRotation: 90, 
+    ui: { menu: false, scale: false },
+    theme: {
+      elements: {
+        asset: {
+           fillOpacity: 0.8,
+        },
+        roomStamp: {
+          roomStampDisplay: ['usage']
+        },
+      },
+      background: {
+        color: "#fff"
+      }
+    },
+    units: {
+      system: "imperial"
+    }
+  }
+  
+  let hasLoaded = false
+  let fpe
+  let prevClickedSpaceId
+  
+  const FloorPlan = ({ triggerQuery, model, modelUpdate }) => {  
+    const container = React.useRef(null);
+    const { token, floorId } = model
+    
+    minColor = model.minColor
+    maxColor = model.maxColor
+    spaceData = model.spaceData
+    
+    function createSpaceColorObjects(fpe) {
+      spaceColorObjects = []
+      const spaceResources = fpe.resources.spaces
+      
+      if(model.spaceData.length){
+        createGradientColors(spaceResources)
+      } else {
+        createDefaultColors(spaceResources)
+      }
+    }
+    function createDefaultColors(spaceResources){
+      spaceColorObjects = []
+      spaceResources.forEach(space => {
+        if (space.program === 'work' || space.program === 'meet' || space.program === 'socialize') {
+          const color = defaultColors[space.program]
+          const spaceColorObject = {
+            space,
+            displayData: { value: null, gradientIndex: null, color: color }
+          }
+          spaceColorObject.space.node.setHighlight({
+            fill: color,
+            fillOpacity: 1.0
+          })
+          spaceColorObjects.push(spaceColorObject)
+        } else {
+          const color = defaultColors['other']
+          const spaceColorObject = {
+            space,
+            displayData: { value: null, gradientIndex: null, color: color }
+          }
+          spaceColorObject.space.node.setHighlight({
+            fill: color,
+            fillOpacity: 1.0
+          })
+          spaceColorObjects.push(spaceColorObject)
+        }
+      })
+    }
+    function createGradientColors(spaceResources){
+      spaceColorObjects = []
+     
+      const gradientColorArray = initializeGradients(minColor, maxColor)
+      const minMaxObject = findMinMax(spaceData)
+      
+      spaceResources.forEach(space => {
+        let match = spaceData.find(data => data.id === space.id)
+        if (match) {
+          const remappedFloat = map(match.value, minMaxObject.min, minMaxObject.max, outMin, outMax)
+          const remappedInt = Math.trunc(remappedFloat)
+          const colorValue = gradientColorArray[remappedInt]
+          const color = hexToRgb(colorValue)
+          const spaceColorObject = {
+            space,
+            displayData: { value: match.value, gradientIndex: remappedInt, color: color }
+          }
+          spaceColorObject.space.node.setHighlight({
+            fill: color,
+            fillOpacity: 1.0
+          })
+          spaceColorObjects.push(spaceColorObject)
+        } 
+      })
+    }
+    
+    function selectionUpdate(spaceIds) {
+      if(spaceIds.length === 0) return
+      spaceColorObjects.forEach(spaceColorObject => {
+        if (spaceIds.includes(spaceColorObject.space.id)) {
+          spaceColorObject.space.node.setHighlight({
+            fill: spaceColorObject.displayData.color,
+            fillOpacity: 1
+          })
+        } else {
+          spaceColorObject.space.node.setHighlight({
+            fill: spaceColorObject.displayData.color,
+            fillOpacity: 0.3
+          })
+        }
+      })
+    }
+    
+    function resetSelection(){
+      spaceColorObjects.forEach(spaceColorObject => {
+        spaceColorObject.space.node.setHighlight({
+          fill: spaceColorObject.displayData.color,
+          fillOpacity: 1
+        })
+      })
+    }
+    
+    function onClick(fpe){
+      fpe.on('click', (event) => {
+        const position = event.pos
+        const positionResources = fpe.getResourcesFromPosition(position)
+        
+        if(positionResources.spaces.length){
+          const selectedSpace = positionResources.spaces[0]
+          selectionUpdate([selectedSpace.id])
+          modelUpdate({selectedSpace: selectedSpace.id})
+          
+          prevClickedSpaceId = selectedSpace.id
+        }
+      })
+    }
+    
+    async function initFloorPlan(){
+      if(!token || !floorId) return
+      if(!hasLoaded || hasLoaded !== floorId){
+        fpe = new FloorPlanEngine(container.current, {startupSettings})
+          await fpe.loadScene(floorId, {publishableToken: token})
+          hasLoaded = floorId
+          return fpe
+      } else {
+        return fpe
+      }
+    }
+    
+    React.useEffect(() => {
+      if(fpe) return
+      if(container.current){
+        initFloorPlan()
+        .then((fpe) => {
+          createSpaceColorObjects(fpe)
+        })
+      }
+    })
+    React.useEffect(() => {
+      if(!fpe) return
+      if(model.highlightSpaces.length){
+        selectionUpdate(model.highlightSpaces)
+      }
+      onClick(fpe)    
+    })
+    
+    return(
+      <div id="floor-plan" ref={container}></div>
+    )
+  }
+
+  const ConnectedComponent = Retool.connectReactComponent(FloorPlan)
+  const container = document.getElementById('react')
+  const root = ReactDOM.createRoot(container)
+  root.render(<ConnectedComponent />)
+</script>
