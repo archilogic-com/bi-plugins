@@ -1,347 +1,109 @@
-var aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
+var floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 272:
+/***/ 33:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-const startupOptions = {
-    theme: {
-        background: {
-            color: 'transparent',
-            showGrid: false
-        },
-        wallContours: false,
-        elements: {
-            asset: {
-                fill: [200, 200, 200],
-                stroke: [0, 0, 0],
-                strokeWidth: 2
-            },
-            space: {
-                fill: [255, 255, 255],
-                program: {
-                    circulate: { fill: [255, 255, 255], fillOpacity: 0.1 },
-                    care: { fill: [255, 255, 255], fillOpacity: 0.15 }
-                }
-            }
-            // wallContour: {
-            //   strokeWidth: 4,
-            //   fill: [255, 255, 255],
-            //   stroke: [0, 0, 0],
-            //   fillOpacity: 0.3
-            // },
-            // roomStamp: { showArea: false },
-            // window: {
-            //   fillOpacity: 0.15
-            // },
-            // door: {
-            //   fillOpacity: 0.15
-            // },
-            // stairs: {
-            //   fillOpacity: 0.05
-            // },
-            // closet: {
-            //   fillOpacity: 0.1
-            // },
-            // kitchen: {
-            //   fillOpacity: 0.1
-            // },
-            // box: {
-            //   fillOpacity: 0.1
-            // }
-        }
-    }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (startupOptions);
-
-
-/***/ }),
-
-/***/ 812:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "E": () => (/* binding */ initialState),
-/* harmony export */   "k": () => (/* binding */ FloorPlan)
+/* harmony export */   "M": () => (/* binding */ FloorPanel)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(294);
-/* harmony import */ var _archilogic_floor_plan_sdk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(180);
-/* harmony import */ var javascript_color_gradient__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(222);
-/* harmony import */ var javascript_color_gradient__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(javascript_color_gradient__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Legend__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(460);
-/* harmony import */ var _common_startupOptions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(272);
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(860);
+
+
+let floorPlan;
+const categoriesToHighlight = ['work', 'meet', 'socialize'];
+const defaultColors = {
+    work: [159, 188, 255],
+    meet: [121, 204, 205],
+    socialize: [241, 102, 100],
+    other: [255, 255, 255]
 };
-
-
-
-
-
-const initialState = {
-    spaceIDs: [],
-    spaceValues: [],
-    publishableToken: '',
-    floorID: ''
-};
-function clamp(input, min, max) {
-    return input < min ? min : input > max ? max : input;
-}
-function map(current, in_min, in_max, out_min, out_max) {
-    const mapped = ((current - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
-    return clamp(mapped, out_min, out_max);
-}
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
-}
-class FloorPlan extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
+class FloorPanel extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
     constructor(props) {
         super(props);
-        this.isFloorPlanLoaded = false;
-        this.isSameTokenID = false;
-        this.spaceColorObjects = [];
-        this.defaultColors = {
-            work: [159, 188, 255],
-            meet: [121, 204, 205],
-            socialize: [241, 102, 100],
-            other: [255, 255, 255]
-        };
-        this.midPoints = 20;
-        this.outMin = 0;
-        this.outMax = this.midPoints - 1;
-        this.isGradient = false;
-        this.linearGradientLegendString = 'linear-gradient(90deg, #e66465, #9198e5)';
-        this.state = initialState;
-        this.setStateFromProps = this.setStateFromProps.bind(this);
+        this.state = { selectedSpace: null, isFloorPlanLoaded: false };
     }
-    setStateFromProps(props) {
-        this.updateSelection = props.updateSelection;
-        if (props.publishableToken !== this.state.publishableToken ||
-            props.floorID !== this.state.floorID) {
-            this.isSameTokenID = false;
+    getGradientColorBySpaceValue(space) {
+        var _a, _b;
+        const gradient = (0,_utils__WEBPACK_IMPORTED_MODULE_1__/* .generateGradients */ .AU)(this.props.gradient.min.color, this.props.gradient.max.color);
+        const valueIndex = (_a = this.props.nodeIds) === null || _a === void 0 ? void 0 : _a.indexOf(space.id);
+        const gradientIndex = Math.floor(((_b = this.props.nodeValues) === null || _b === void 0 ? void 0 : _b[valueIndex]) * 10);
+        if (gradientIndex) {
+            const rgb = gradient[gradientIndex];
+            return (0,_utils__WEBPACK_IMPORTED_MODULE_1__/* .hexToRgb */ .oo)(rgb);
         }
-        else {
-            this.isSameTokenID = true;
-        }
-        this.state = Object.assign(Object.assign({}, this.state), { spaceIDs: props.spaceIDs, spaceValues: props.spaceValues, publishableToken: props.publishableToken, floorID: props.floorID });
-        if (props.gradientObject)
-            this.linearGradientLegendString = `linear-gradient(90deg, ${props.gradientObject.min.color}, ${props.gradientObject.max.color})`;
     }
-    createSpaceColorObjectsDefault(spaceResources) {
-        this.spaceColorObjects = [];
-        spaceResources.forEach(space => {
-            if (space.program === 'work' || space.program === 'meet' || space.program === 'socialize') {
-                const color = this.defaultColors[space.program];
-                const spaceColorObject = Object.assign(Object.assign({}, space), { displayData: { value: null, gradientIndex: null, color: color } });
-                spaceColorObject.node.setHighlight({
-                    fill: color,
-                    fillOpacity: 1.0
-                });
-                this.spaceColorObjects.push(spaceColorObject);
-            }
-            else {
-                const color = this.defaultColors['other'];
-                const spaceColorObject = Object.assign(Object.assign({}, space), { displayData: { value: null, gradientIndex: null, color: color } });
-                spaceColorObject.node.setHighlight({
-                    fill: color,
-                    fillOpacity: 1.0
-                });
-                this.spaceColorObjects.push(spaceColorObject);
-            }
+    getHighlightColor(space) {
+        let color = defaultColors[space.program];
+        if (this.props.isGradient.value && this.props.gradient.min) {
+            const gradientColor = this.getGradientColorBySpaceValue(space);
+            if (gradientColor)
+                color = gradientColor;
+        }
+        return color;
+    }
+    highlightNode(space, fillOpacity = 1.0) {
+        if (!space)
+            return;
+        if (categoriesToHighlight.includes(space.program)) {
+            const fillColor = this.getHighlightColor(space);
+            space.node.setHighlight({
+                fill: fillColor,
+                fillOpacity
+            });
+        }
+    }
+    highlightNodes(fillOpacity = 1.0) {
+        const nodes = (0,_utils__WEBPACK_IMPORTED_MODULE_1__/* .getAssetsAndSpaces */ .G2)(floorPlan);
+        nodes.forEach((space) => {
+            this.highlightNode(space, fillOpacity);
         });
     }
-    initializeGradients(gradientObject) {
-        this.minColor = gradientObject.min.color;
-        this.maxColor = gradientObject.max.color;
-        return (this.gradientArray = new (javascript_color_gradient__WEBPACK_IMPORTED_MODULE_2___default())()
-            .setColorGradient(gradientObject.min.color, this.maxColor)
-            .setMidpoint(this.midPoints)
-            .getColors());
+    highlightNodesFromProps() {
+        this.highlightNodes(0.5);
+        this.props.nodeIds.forEach(nodeId => {
+            const space = (0,_utils__WEBPACK_IMPORTED_MODULE_1__/* .getNodeById */ .lK)(floorPlan, nodeId);
+            this.highlightNode(space);
+        });
     }
-    createSpaceColorObjectsGradient(spaceIDs, spaceValues, spaceResources, gradientObject, gradientArray) {
-        this.spaceColorObjects = [];
-        for (let i = 0; i < spaceIDs.length; i++) {
-            const spaceID = spaceIDs[i];
-            const value = spaceValues[i];
-            let match = spaceResources.find(space => space.id === spaceID);
-            const inMin = gradientObject.min.value;
-            const inMax = gradientObject.max.value;
-            if (match) {
-                const remappedFloat = map(value, inMin, inMax, this.outMin, this.outMax);
-                const remappedInt = Math.trunc(remappedFloat);
-                const colorValue = gradientArray[remappedInt];
-                const color = hexToRgb(colorValue);
-                const spaceColorObject = Object.assign(Object.assign({}, match), { displayData: { value: value, gradientIndex: remappedInt, color: color } });
-                spaceColorObject.node.setHighlight({
-                    fill: color,
-                    fillOpacity: 1.0
-                });
-                this.spaceColorObjects.push(spaceColorObject);
-            }
-        }
-    }
-    getResource(fpe, position) {
-        const positionResources = fpe.getResourcesFromPosition(position);
-        const selectedSpace = positionResources.spaces ? positionResources.spaces[0] : false;
-        const selectedAsset = positionResources.assets ? positionResources.assets[0] : false;
-        let selectedResource;
-        let selectedResourceType;
-        if (!selectedAsset) {
-            selectedResource = selectedSpace;
-            selectedResourceType = 'space';
-        }
-        else {
-            selectedResource = selectedAsset;
-            selectedResourceType = 'asset';
-        }
-        return {
-            type: selectedResourceType,
-            data: selectedResource
-        };
-    }
-    initFloorPlan(container) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!container)
+    handleClick() {
+        floorPlan.on('click', event => {
+            const position = event.pos;
+            const selectedSpace = (0,_utils__WEBPACK_IMPORTED_MODULE_1__/* .getSpaceByPosition */ .FZ)(floorPlan, position);
+            if (this.state.selectedSpace === selectedSpace)
                 return;
-            const fpe = new _archilogic_floor_plan_sdk__WEBPACK_IMPORTED_MODULE_1__/* .FloorPlanEngine */ .GB({ container, options: _common_startupOptions__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z });
-            const isFloorPlanLoaded = yield fpe.loadScene(this.state.floorID, {
-                publishableAccessToken: this.state.publishableToken
-            });
-            isFloorPlanLoaded ? (this.isFloorPlanLoaded = true) : (this.isFloorPlanLoaded = false);
-            this.floorPlan = fpe;
-            this.spaceResources = fpe.resources.spaces;
-            if (this.props.gradientObject) {
-                this.isGradient = true;
-                this.gradientArray = this.initializeGradients(this.props.gradientObject);
-                this.gradientSource = this.props.gradientSource;
-                this.createSpaceColorObjectsGradient(this.props.spaceIDs, this.props.spaceValues, this.spaceResources, this.props.gradientObject, this.gradientArray);
-            }
-            else {
-                this.isGradient = false;
-                this.createSpaceColorObjectsDefault(this.spaceResources);
-            }
-            fpe.on('click', (event) => {
-                const position = event.pos;
-                const selectedResource = this.getResource(fpe, position);
-                this.selectedResource = selectedResource;
-                if (!selectedResource.data)
-                    return;
-                if (selectedResource.type !== 'space')
-                    return;
-                this.selectionUpdate(this.spaceColorObjects, [selectedResource.data.id]);
-                const selectedIDIndex = this.state.spaceIDs.indexOf(selectedResource.data.id);
-                this.updateSelection(selectedIDIndex);
-            });
+            this.setState({ selectedSpace });
+            if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program))
+                return;
+            this.props.onClick(selectedSpace.id);
         });
     }
-    componentDidMount() {
-        const container = document.getElementById('floorplan');
-        this.container = container;
-    }
-    selectionUpdate(spaceColorObjects, spaceIDs) {
-        spaceColorObjects.forEach(space => {
-            if (spaceIDs.includes(space.id)) {
-                space.node.setHighlight({
-                    fill: space.displayData.color,
-                    fillOpacity: 1
-                });
-            }
-            else {
-                space.node.setHighlight({
-                    fill: space.displayData.color,
-                    fillOpacity: 0.3
-                });
-            }
-        });
-    }
-    updateFloorPlan(floorPlan, state) {
-        if (!floorPlan)
+    handleHighlightedNodes() {
+        if (!this.state.isFloorPlanLoaded)
             return;
-        if (state.spaceIDs && state.spaceIDs.length === 0)
-            return;
-        if (this.props.gradientObject) {
-            this.isGradient = true;
-            if (this.gradientSource !== this.props.gradientSource ||
-                this.minColor !== this.props.gradientObject.min.color ||
-                this.maxColor !== this.props.gradientObject.max.color) {
-                this.gradientSource = this.props.gradientSource;
-                this.gradientArray = this.initializeGradients(this.props.gradientObject);
-                this.createSpaceColorObjectsGradient(this.props.spaceIDs, this.props.spaceValues, this.spaceResources, this.props.gradientObject, this.gradientArray);
-            }
-            else {
-                this.selectionUpdate(this.spaceColorObjects, state.spaceIDs);
-            }
+        if (this.props.nodeIds.length) {
+            this.highlightNodesFromProps();
         }
         else {
-            this.isGradient = false;
-            this.createSpaceColorObjectsDefault(this.spaceResources);
-            this.selectionUpdate(this.spaceColorObjects, state.spaceIDs);
+            this.highlightNodes();
         }
+    }
+    handleLoad(fpe) {
+        this.setState({
+            isFloorPlanLoaded: true
+        });
+        floorPlan = fpe;
+        this.handleHighlightedNodes();
+        this.handleClick();
     }
     render() {
-        this.setStateFromProps(this.props);
-        if (!this.isFloorPlanLoaded && !this.isSameTokenID) {
-            this.initFloorPlan(this.container);
-        }
-        this.updateFloorPlan(this.floorPlan, this.state);
+        this.handleHighlightedNodes();
         return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "app" },
-            this.props.isLegendEnabled ? (react__WEBPACK_IMPORTED_MODULE_0__.createElement(_Legend__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, { isGradient: this.isGradient, defaultColors: this.defaultColors, gradientObject: this.props.gradientObject })) : null,
-            react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "floorplan", className: this.props.isLegendEnabled ? 'withLegend' : 'fullHeight' }, this.state.publishableToken && this.state.floorID ? null : (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "token-id-warning" },
-                react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, "Please provide Publishable Token and Floor ID in the Format Pane"))))));
+            react__WEBPACK_IMPORTED_MODULE_0__.createElement(_utils__WEBPACK_IMPORTED_MODULE_1__/* .FloorPlan */ .km, { id: this.props.floorID, token: this.props.publishableToken, loaded: this.state.isFloorPlanLoaded, onLoad: this.handleLoad.bind(this) })));
     }
-}
-
-
-/***/ }),
-
-/***/ 460:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ Legend)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(294);
-
-function valueToHex(c) {
-    var hex = c.toString(16);
-    return hex;
-}
-function rgbToHex(rgbArray) {
-    return valueToHex(rgbArray[0]) + valueToHex(rgbArray[1]) + valueToHex(rgbArray[2]);
-}
-function Legend({ isGradient, defaultColors, gradientObject }) {
-    const keys = Object.keys(defaultColors);
-    const defaultColorBars = keys.map(key => {
-        if (key === 'other')
-            return;
-        const color = defaultColors[key];
-        const hexColor = rgbToHex(color);
-        return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { key: key, className: "default-wrapper" },
-            react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { className: "default-bars", style: { background: `#${hexColor}` } }),
-            react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", null, key)));
-    });
-    let linearGradientLegendString;
-    isGradient
-        ? (linearGradientLegendString = `linear-gradient(90deg, ${gradientObject.min.color}, ${gradientObject.max.color})`)
-        : null;
-    return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "legend" }, isGradient ? (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "gradient-cont" },
-        react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "gradient-bar", style: { background: linearGradientLegendString } }),
-        react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", { id: "min-value" }, gradientObject.min.value),
-        react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", { id: "max-value" }, gradientObject.max.value))) : (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: "default-cont" }, defaultColorBars))));
 }
 
 
@@ -356,32 +118,6 @@ function Legend({ isGradient, defaultColors, gradientObject }) {
 /* harmony export */ });
 /* harmony import */ var powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84);
 /* harmony import */ var powerbi_visuals_utils_dataviewutils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(581);
-/*
- *  Power BI Visualizations
- *
- *  Copyright (c) Microsoft Corporation
- *  All rights reserved.
- *  MIT License
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the ""Software""), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in
- *  all copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
- */
-
 
 
 var FormattingSettingsCard = powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .Card */ .Zb;
@@ -406,7 +142,7 @@ class ArchilogicPluginSettings extends FormattingSettingsCard {
         this.slices = [this.publishableToken, this.floorID];
     }
 }
-class EnableLegendSettings extends FormattingSettingsCard {
+class GradientSettings extends FormattingSettingsCard {
     constructor() {
         super(...arguments);
         this.show = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_0__/* .ToggleSwitch */ .Zh({
@@ -415,8 +151,8 @@ class EnableLegendSettings extends FormattingSettingsCard {
             value: false,
             topLevelToggle: false
         });
-        this.name = 'enableLegend';
-        this.displayName = 'Enable Legend';
+        this.name = 'enableGradient';
+        this.displayName = 'Enable Gradient';
         this.slices = [this.show];
     }
 }
@@ -439,9 +175,9 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
     constructor() {
         super(...arguments);
         this.archilogicPluginSettings = new ArchilogicPluginSettings();
-        this.enableLegend = new EnableLegendSettings();
+        this.enableGradient = new GradientSettings();
         this.dataPoint = new DataPointSettings();
-        this.cards = [this.archilogicPluginSettings, this.enableLegend, this.dataPoint];
+        this.cards = [this.archilogicPluginSettings, this.enableGradient, this.dataPoint];
     }
 }
 
@@ -459,33 +195,7 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 /* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(445);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(294);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(935);
-/* harmony import */ var _components_FloorPlan__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(812);
-/*
- *  Power BI Visualizations
- *
- *  Copyright (c) Microsoft Corporation
- *  All rights reserved.
- *  MIT License
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the ""Software""), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in
- *  all copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
- */
-
+/* harmony import */ var _components_FloorPanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(33);
 
 
 
@@ -494,75 +204,72 @@ class VisualFormattingSettingsModel extends FormattingSettingsModel {
 
 class Visual {
     constructor(options) {
-        this.dataPoints = [];
-        this.reactRoot = react__WEBPACK_IMPORTED_MODULE_1__.createElement(_components_FloorPlan__WEBPACK_IMPORTED_MODULE_3__/* .FloorPlan */ .k, { initialState: _components_FloorPlan__WEBPACK_IMPORTED_MODULE_3__/* .initialState */ .E });
         this.target = options.element;
         this.formattingSettingsService = new powerbi_visuals_utils_formattingmodel__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z();
         this.host = options.host;
         this.selectionManager = this.host.createSelectionManager();
         this.selectionManager.clear();
-        react_dom__WEBPACK_IMPORTED_MODULE_2__.render(this.reactRoot, this.target);
+    }
+    setGradient(objectsRules) {
+        if (objectsRules) {
+            const gradient = objectsRules.dataPoint.defaultColor.gradient;
+            const gradientOptions = gradient.options;
+            const gradientKey = Object.keys(gradientOptions)[0];
+            this.gradient = gradientOptions[gradientKey];
+        }
+        else {
+            this.gradient = null;
+        }
+    }
+    updateSelectionBySpaceId(spaceId) {
+        var _a, _b;
+        let categoryIndex;
+        const categories = (_b = (_a = this.dataView) === null || _a === void 0 ? void 0 : _a.categorical) === null || _b === void 0 ? void 0 : _b.categories;
+        categories.forEach(category => {
+            var _a, _b;
+            const valueIndex = category.values.findIndex(value => value === spaceId);
+            if (valueIndex)
+                categoryIndex = (_b = (_a = category === null || category === void 0 ? void 0 : category.identity) === null || _a === void 0 ? void 0 : _a[valueIndex]) === null || _b === void 0 ? void 0 : _b.identityIndex;
+        });
+        if (categoryIndex) {
+            const categorySelectionId = this.host
+                .createSelectionIdBuilder()
+                .withCategory(categories[0], categoryIndex)
+                .createSelectionId();
+            this.selectionManager.select(categorySelectionId);
+        }
+        return categoryIndex;
+    }
+    setSelectedSpaceId(spaceId) {
+        this.selectionManager.clear();
+        this.selectedSpaceId = spaceId;
+        const nodeIds = [this.selectedSpaceId];
+        const categoryIndex = this.updateSelectionBySpaceId(spaceId);
+        this.renderReactComponent(nodeIds);
+        if (!categoryIndex)
+            setTimeout(() => this.setSelectedSpaceId(spaceId), 500);
+    }
+    renderReactComponent(nodeIds, nodeValues) {
+        const onClick = this.setSelectedSpaceId.bind(this);
+        const reactElement = react__WEBPACK_IMPORTED_MODULE_1__.createElement(_components_FloorPanel__WEBPACK_IMPORTED_MODULE_3__/* .FloorPanel */ .M, {
+            publishableToken: this.formattingSettings.archilogicPluginSettings.publishableToken.value,
+            floorID: this.formattingSettings.archilogicPluginSettings.floorID.value,
+            isGradient: this.formattingSettings.enableGradient.slices[0],
+            gradient: this.gradient,
+            nodeValues,
+            nodeIds,
+            onClick
+        });
+        react_dom__WEBPACK_IMPORTED_MODULE_2__.render(reactElement, this.target);
     }
     update(options) {
         this.formattingSettings = this.formattingSettingsService.populateFormattingSettingsModel(_settings__WEBPACK_IMPORTED_MODULE_0__/* .VisualFormattingSettingsModel */ .E, options.dataViews);
-        const enableLegendSetting = this.formattingSettings.enableLegend;
-        const dataPointSetting = this.formattingSettings.dataPoint;
-        const publishableToken = this.formattingSettings.archilogicPluginSettings.publishableToken.value;
-        const floorID = this.formattingSettings.archilogicPluginSettings.floorID.value;
-        if (options.dataViews && options.dataViews[0]) {
-            const dataView = options.dataViews[0];
-            const categories = dataView.categorical.categories;
-            const measures = dataView.categorical.values;
-            const metadata = dataView.metadata;
-            const objectsRules = metadata.objectsRules;
-            if (objectsRules) {
-                const gradientOptions = objectsRules.dataPoint.defaultColor.gradient.options;
-                const key = Object.keys(gradientOptions)[0];
-                this.gradientObject = gradientOptions[key];
-                this.gradientSource = objectsRules.dataPoint.defaultColor.gradient.source.queryName;
-            }
-            else {
-                this.gradientObject = null;
-            }
-            if (!this.categories)
-                this.categories = categories;
-            if (!this.measures)
-                this.measures = measures;
-            if (!this.spaceCount)
-                this.spaceCount = categories[0].values.length;
-            const categoriesCount = categories[0].values.length;
-            for (let categoryIndex = 0; categoryIndex < categoriesCount; categoryIndex++) {
-                const categoryValue = categories[0].values[categoryIndex];
-                const categorySelectionId = this.host
-                    .createSelectionIdBuilder()
-                    .withCategory(categories[0], categoryIndex)
-                    .createSelectionId();
-                this.dataPoints.push({
-                    value: categoryValue,
-                    selection: categorySelectionId
-                });
-            }
-            const selectionManager = this.selectionManager;
-            const dataPoints = this.dataPoints;
-            function updateSelection(categoryIndex) {
-                selectionManager.clear();
-                const categorySelectionId = dataPoints[categoryIndex].selection;
-                selectionManager.select(categorySelectionId);
-            }
-            this.reactRoot = react__WEBPACK_IMPORTED_MODULE_1__.createElement(_components_FloorPlan__WEBPACK_IMPORTED_MODULE_3__/* .FloorPlan */ .k, {
-                spaceIDs: dataView.categorical.categories[0].values,
-                spaceValues: dataView.categorical.values[0].values,
-                spaceCount: this.spaceCount,
-                updateSelection: updateSelection,
-                publishableToken: publishableToken,
-                floorID: floorID,
-                isLegendEnabled: enableLegendSetting.show.value,
-                gradientObject: this.gradientObject,
-                gradientSource: this.gradientSource,
-                dataPointSetting: dataPointSetting
-            });
-            react_dom__WEBPACK_IMPORTED_MODULE_2__.render(this.reactRoot, this.target);
-        }
+        this.dataView = options.dataViews[0];
+        const { objectsRules } = this.dataView.metadata;
+        const nodeIds = this.dataView.categorical.categories[0].values;
+        const nodeValues = this.dataView.categorical.values[0].values;
+        this.setGradient(objectsRules);
+        this.renderReactComponent(nodeIds, nodeValues);
     }
     getFormattingModel() {
         return this.formattingSettingsService.buildFormattingModel(this.formattingSettings);
@@ -572,7 +279,165 @@ class Visual {
 
 /***/ }),
 
-/***/ 180:
+/***/ 246:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(784);
+/* harmony import */ var _archilogic_floor_plan_sdk__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80);
+
+
+
+const FLOOR_PLAN_ID = 'floor-plan';
+let floorPlan;
+const FloorPanel = props => {
+    const tokenOptions = {
+        publishableAccessToken: props.token
+    };
+    const initFloorPlan = () => {
+        const container = document.getElementById(FLOOR_PLAN_ID);
+        if (container) {
+            if (!props.loaded) {
+                floorPlan = new _archilogic_floor_plan_sdk__WEBPACK_IMPORTED_MODULE_1__/* .FloorPlanEngine */ .GB({ container, options: props.startupOptions });
+                floorPlan.loadScene(props.id, tokenOptions).then(() => {
+                    if (props.onLoad)
+                        props.onLoad(floorPlan);
+                });
+            }
+            else {
+                if (props.onLoad)
+                    props.onLoad(floorPlan);
+            }
+        }
+    };
+    setTimeout(initFloorPlan, 500);
+    return (react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { className: "plan-wrapper" },
+        react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", { id: FLOOR_PLAN_ID, className: "plan-container" })));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FloorPanel);
+
+
+/***/ }),
+
+/***/ 459:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* reexport safe */ _FloorPlan__WEBPACK_IMPORTED_MODULE_0__.Z)
+/* harmony export */ });
+/* harmony import */ var _FloorPlan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(246);
+
+
+
+/***/ }),
+
+/***/ 59:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "k": () => (/* reexport safe */ _FloorPlan__WEBPACK_IMPORTED_MODULE_0__.Z)
+/* harmony export */ });
+/* harmony import */ var _FloorPlan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(459);
+
+
+
+/***/ }),
+
+/***/ 860:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AU": () => (/* reexport safe */ _utils_colors__WEBPACK_IMPORTED_MODULE_1__.AU),
+/* harmony export */   "FZ": () => (/* reexport safe */ _utils_nodes__WEBPACK_IMPORTED_MODULE_2__.FZ),
+/* harmony export */   "G2": () => (/* reexport safe */ _utils_nodes__WEBPACK_IMPORTED_MODULE_2__.G2),
+/* harmony export */   "km": () => (/* reexport safe */ _components__WEBPACK_IMPORTED_MODULE_0__.k),
+/* harmony export */   "lK": () => (/* reexport safe */ _utils_nodes__WEBPACK_IMPORTED_MODULE_2__.lK),
+/* harmony export */   "oo": () => (/* reexport safe */ _utils_colors__WEBPACK_IMPORTED_MODULE_1__.oo)
+/* harmony export */ });
+/* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59);
+/* harmony import */ var _utils_colors__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(506);
+/* harmony import */ var _utils_nodes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(960);
+
+
+
+
+
+
+/***/ }),
+
+/***/ 506:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AU": () => (/* binding */ generateGradients),
+/* harmony export */   "oo": () => (/* binding */ hexToRgb)
+/* harmony export */ });
+/* unused harmony exports valueToHex, rgbToHex */
+/* harmony import */ var javascript_color_gradient__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(441);
+/* harmony import */ var javascript_color_gradient__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(javascript_color_gradient__WEBPACK_IMPORTED_MODULE_0__);
+// @ts-ignore-next-line
+
+function valueToHex(color) {
+    const hex = color.toString(16);
+    return hex;
+}
+function rgbToHex(rgbArray) {
+    return valueToHex(rgbArray[0]) + valueToHex(rgbArray[1]) + valueToHex(rgbArray[2]);
+}
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+}
+function generateGradients(colorFrom, colorTo, midpoint = 10) {
+    return new (javascript_color_gradient__WEBPACK_IMPORTED_MODULE_0___default())().setColorGradient(colorFrom, colorTo).setMidpoint(midpoint).getColors();
+}
+
+
+/***/ }),
+
+/***/ 960:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "FZ": () => (/* binding */ getSpaceByPosition),
+/* harmony export */   "G2": () => (/* binding */ getAssetsAndSpaces),
+/* harmony export */   "lK": () => (/* binding */ getNodeById)
+/* harmony export */ });
+/* unused harmony export getNodeByClick */
+const getAssetsAndSpaces = (floorPlan) => {
+    if (!floorPlan)
+        return [];
+    const { spaces, assets } = floorPlan.resources;
+    return [...spaces, ...assets];
+};
+const getNodeById = (floorPlan, id) => {
+    const nodes = getAssetsAndSpaces(floorPlan);
+    return nodes.find(node => node.id === id);
+};
+const getNodeByClick = (floorPlan, evt) => {
+    const { nodeId } = evt;
+    if (nodeId) {
+        return getNodeById(floorPlan, nodeId);
+    }
+};
+const getSpaceByPosition = (floorPlan, position) => {
+    const point2d = position;
+    const positionResources = floorPlan.getResourcesFromPosition(point2d);
+    return positionResources.spaces ? positionResources.spaces[0] : false;
+};
+
+
+/***/ }),
+
+/***/ 80:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -581,7 +446,7 @@ class Visual {
 /* harmony export */ });
 /* unused harmony exports polygonIntersection, polygonOffset, polygonUnion */
 /* provided dependency */ var window = __webpack_require__(738);
-/* provided dependency */ var process = __webpack_require__(155);
+/* provided dependency */ var process = __webpack_require__(406);
 /*!
   Archilogic Floor Plan Engine SDK v5.0.0-beta.0 webgl build nightly-221026-205413-f0b610
 
@@ -1408,7 +1273,7 @@ void main(void)
 
 /***/ }),
 
-/***/ 222:
+/***/ 441:
 /***/ ((module) => {
 
 class GradientColor {
@@ -1570,6 +1435,244 @@ class Gradient {
 }
 
 module.exports = Gradient;
+
+
+/***/ }),
+
+/***/ 406:
+/***/ ((module) => {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+
+/***/ 426:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+/**
+ * @license React
+ * react.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var l=Symbol.for("react.element"),n=Symbol.for("react.portal"),p=Symbol.for("react.fragment"),q=Symbol.for("react.strict_mode"),r=Symbol.for("react.profiler"),t=Symbol.for("react.provider"),u=Symbol.for("react.context"),v=Symbol.for("react.forward_ref"),w=Symbol.for("react.suspense"),x=Symbol.for("react.memo"),y=Symbol.for("react.lazy"),z=Symbol.iterator;function A(a){if(null===a||"object"!==typeof a)return null;a=z&&a[z]||a["@@iterator"];return"function"===typeof a?a:null}
+var B={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},C=Object.assign,D={};function E(a,b,e){this.props=a;this.context=b;this.refs=D;this.updater=e||B}E.prototype.isReactComponent={};
+E.prototype.setState=function(a,b){if("object"!==typeof a&&"function"!==typeof a&&null!=a)throw Error("setState(...): takes an object of state variables to update or a function which returns an object of state variables.");this.updater.enqueueSetState(this,a,b,"setState")};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};function F(){}F.prototype=E.prototype;function G(a,b,e){this.props=a;this.context=b;this.refs=D;this.updater=e||B}var H=G.prototype=new F;
+H.constructor=G;C(H,E.prototype);H.isPureReactComponent=!0;var I=Array.isArray,J=Object.prototype.hasOwnProperty,K={current:null},L={key:!0,ref:!0,__self:!0,__source:!0};
+function M(a,b,e){var d,c={},k=null,h=null;if(null!=b)for(d in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(k=""+b.key),b)J.call(b,d)&&!L.hasOwnProperty(d)&&(c[d]=b[d]);var g=arguments.length-2;if(1===g)c.children=e;else if(1<g){for(var f=Array(g),m=0;m<g;m++)f[m]=arguments[m+2];c.children=f}if(a&&a.defaultProps)for(d in g=a.defaultProps,g)void 0===c[d]&&(c[d]=g[d]);return{$$typeof:l,type:a,key:k,ref:h,props:c,_owner:K.current}}
+function N(a,b){return{$$typeof:l,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function O(a){return"object"===typeof a&&null!==a&&a.$$typeof===l}function escape(a){var b={"=":"=0",":":"=2"};return"$"+a.replace(/[=:]/g,function(a){return b[a]})}var P=/\/+/g;function Q(a,b){return"object"===typeof a&&null!==a&&null!=a.key?escape(""+a.key):b.toString(36)}
+function R(a,b,e,d,c){var k=typeof a;if("undefined"===k||"boolean"===k)a=null;var h=!1;if(null===a)h=!0;else switch(k){case "string":case "number":h=!0;break;case "object":switch(a.$$typeof){case l:case n:h=!0}}if(h)return h=a,c=c(h),a=""===d?"."+Q(h,0):d,I(c)?(e="",null!=a&&(e=a.replace(P,"$&/")+"/"),R(c,b,e,"",function(a){return a})):null!=c&&(O(c)&&(c=N(c,e+(!c.key||h&&h.key===c.key?"":(""+c.key).replace(P,"$&/")+"/")+a)),b.push(c)),1;h=0;d=""===d?".":d+":";if(I(a))for(var g=0;g<a.length;g++){k=
+a[g];var f=d+Q(k,g);h+=R(k,b,e,f,c)}else if(f=A(a),"function"===typeof f)for(a=f.call(a),g=0;!(k=a.next()).done;)k=k.value,f=d+Q(k,g++),h+=R(k,b,e,f,c);else if("object"===k)throw b=String(a),Error("Objects are not valid as a React child (found: "+("[object Object]"===b?"object with keys {"+Object.keys(a).join(", ")+"}":b)+"). If you meant to render a collection of children, use an array instead.");return h}
+function S(a,b,e){if(null==a)return a;var d=[],c=0;R(a,d,"","",function(a){return b.call(e,a,c++)});return d}function T(a){if(-1===a._status){var b=a._result;b=b();b.then(function(b){if(0===a._status||-1===a._status)a._status=1,a._result=b},function(b){if(0===a._status||-1===a._status)a._status=2,a._result=b});-1===a._status&&(a._status=0,a._result=b)}if(1===a._status)return a._result.default;throw a._result;}
+var U={current:null},V={transition:null},W={ReactCurrentDispatcher:U,ReactCurrentBatchConfig:V,ReactCurrentOwner:K};exports.Children={map:S,forEach:function(a,b,e){S(a,function(){b.apply(this,arguments)},e)},count:function(a){var b=0;S(a,function(){b++});return b},toArray:function(a){return S(a,function(a){return a})||[]},only:function(a){if(!O(a))throw Error("React.Children.only expected to receive a single React element child.");return a}};exports.Component=E;exports.Fragment=p;
+exports.Profiler=r;exports.PureComponent=G;exports.StrictMode=q;exports.Suspense=w;exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=W;
+exports.cloneElement=function(a,b,e){if(null===a||void 0===a)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+a+".");var d=C({},a.props),c=a.key,k=a.ref,h=a._owner;if(null!=b){void 0!==b.ref&&(k=b.ref,h=K.current);void 0!==b.key&&(c=""+b.key);if(a.type&&a.type.defaultProps)var g=a.type.defaultProps;for(f in b)J.call(b,f)&&!L.hasOwnProperty(f)&&(d[f]=void 0===b[f]&&void 0!==g?g[f]:b[f])}var f=arguments.length-2;if(1===f)d.children=e;else if(1<f){g=Array(f);
+for(var m=0;m<f;m++)g[m]=arguments[m+2];d.children=g}return{$$typeof:l,type:a.type,key:c,ref:k,props:d,_owner:h}};exports.createContext=function(a){a={$$typeof:u,_currentValue:a,_currentValue2:a,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null};a.Provider={$$typeof:t,_context:a};return a.Consumer=a};exports.createElement=M;exports.createFactory=function(a){var b=M.bind(null,a);b.type=a;return b};exports.createRef=function(){return{current:null}};
+exports.forwardRef=function(a){return{$$typeof:v,render:a}};exports.isValidElement=O;exports.lazy=function(a){return{$$typeof:y,_payload:{_status:-1,_result:a},_init:T}};exports.memo=function(a,b){return{$$typeof:x,type:a,compare:void 0===b?null:b}};exports.startTransition=function(a){var b=V.transition;V.transition={};try{a()}finally{V.transition=b}};exports.unstable_act=function(){throw Error("act(...) is not supported in production builds of React.");};
+exports.useCallback=function(a,b){return U.current.useCallback(a,b)};exports.useContext=function(a){return U.current.useContext(a)};exports.useDebugValue=function(){};exports.useDeferredValue=function(a){return U.current.useDeferredValue(a)};exports.useEffect=function(a,b){return U.current.useEffect(a,b)};exports.useId=function(){return U.current.useId()};exports.useImperativeHandle=function(a,b,e){return U.current.useImperativeHandle(a,b,e)};
+exports.useInsertionEffect=function(a,b){return U.current.useInsertionEffect(a,b)};exports.useLayoutEffect=function(a,b){return U.current.useLayoutEffect(a,b)};exports.useMemo=function(a,b){return U.current.useMemo(a,b)};exports.useReducer=function(a,b,e){return U.current.useReducer(a,b,e)};exports.useRef=function(a){return U.current.useRef(a)};exports.useState=function(a){return U.current.useState(a)};exports.useSyncExternalStore=function(a,b,e){return U.current.useSyncExternalStore(a,b,e)};
+exports.useTransition=function(){return U.current.useTransition()};exports.version="18.2.0";
+
+
+/***/ }),
+
+/***/ 784:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(426);
+} else {}
 
 
 /***/ }),
@@ -2147,197 +2250,6 @@ function getPropertyValue(slice, value, defaultValue) {
 
 /***/ }),
 
-/***/ 155:
-/***/ ((module) => {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
 /***/ 448:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -2894,9 +2806,9 @@ __webpack_require__.r(__webpack_exports__);
 
 var powerbiKey = "powerbi";
 var powerbi = window[powerbiKey];
-var aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG = {
-    name: 'aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG',
-    displayName: 'aggregateAssetPriceDemo',
+var floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG = {
+    name: 'floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG',
+    displayName: 'floorPlanVisualization',
     class: 'Visual',
     apiVersion: '5.1.0',
     create: (options) => {
@@ -2916,13 +2828,13 @@ var aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG = {
 if (typeof powerbi !== "undefined") {
     powerbi.visuals = powerbi.visuals || {};
     powerbi.visuals.plugins = powerbi.visuals.plugins || {};
-    powerbi.visuals.plugins["aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG"] = aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
+    powerbi.visuals.plugins["floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG"] = floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
 }
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG);
 
 })();
 
-aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG = __webpack_exports__;
+floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG = __webpack_exports__;
 /******/ })()
 ;
 //# sourceMappingURL=https://localhost:8080/assets/visual.js.map

@@ -11,12 +11,10 @@
     "outDir": "./.tmp/build/",
     "moduleResolution": "node",
     "declaration": true,
-    "lib": ["es2015", "dom"],
+    "lib": ["es6", "dom", "es2017"],
     "skipLibCheck": true,
-    "rootDir": "../..",
-    "baseUrl": "../..",
     "paths": {
-      "@bi-plugin-utils": ["./utils"]
+      "@bi-plugin-utils": ["../../utils"]
     }
   },
   "files": ["./src/visual.ts"]

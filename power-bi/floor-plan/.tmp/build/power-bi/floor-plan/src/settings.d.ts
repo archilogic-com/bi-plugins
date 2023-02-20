@@ -9,7 +9,7 @@ declare class ArchilogicPluginSettings extends FormattingSettingsCard {
     displayName: string;
     slices: Array<FormattingSettingsSlice>;
 }
-declare class EnableLegendSettings extends FormattingSettingsCard {
+declare class GradientSettings extends FormattingSettingsCard {
     show: formattingSettings.ToggleSwitch;
     name: string;
     displayName: string;
@@ -23,8 +23,8 @@ declare class DataPointSettings extends FormattingSettingsCard {
 }
 export declare class VisualFormattingSettingsModel extends FormattingSettingsModel {
     archilogicPluginSettings: ArchilogicPluginSettings;
-    enableLegend: EnableLegendSettings;
+    enableGradient: GradientSettings;
     dataPoint: DataPointSettings;
-    cards: (ArchilogicPluginSettings | EnableLegendSettings | DataPointSettings)[];
+    cards: (ArchilogicPluginSettings | GradientSettings | DataPointSettings)[];
 }
 export {};

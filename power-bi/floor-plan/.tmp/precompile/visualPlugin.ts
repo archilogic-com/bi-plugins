@@ -5,9 +5,9 @@ import VisualConstructorOptions = powerbiVisualsApi.extensibility.visual.VisualC
 import DialogConstructorOptions = powerbiVisualsApi.extensibility.visual.DialogConstructorOptions;
 var powerbiKey: any = "powerbi";
 var powerbi: any = window[powerbiKey];
-var aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG: IVisualPlugin = {
-    name: 'aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG',
-    displayName: 'aggregateAssetPriceDemo',
+var floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG: IVisualPlugin = {
+    name: 'floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG',
+    displayName: 'floorPlanVisualization',
     class: 'Visual',
     apiVersion: '5.1.0',
     create: (options: VisualConstructorOptions) => {
@@ -27,6 +27,6 @@ var aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG: IVisualPlugin
 if (typeof powerbi !== "undefined") {
     powerbi.visuals = powerbi.visuals || {};
     powerbi.visuals.plugins = powerbi.visuals.plugins || {};
-    powerbi.visuals.plugins["aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG"] = aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
+    powerbi.visuals.plugins["floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG"] = floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
 }
-export default aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
+export default floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396_DEBUG;
