@@ -1,18 +1,18 @@
 {
   "visual": {
     "name": "floorPlanVisualization",
-    "displayName": "floorPlanVisualization",
+    "displayName": "Floor PlanV isualization",
     "guid": "floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396",
     "visualClassName": "Visual",
     "version": "1.0.0",
     "description": "Power BI Floor Plan Visualization",
-    "supportUrl": "",
+    "supportUrl": "https://developers.archilogic.com/",
     "gitHubUrl": "https://github.com/archilogic-com/bi-plugins/tree/main/power-bi/floor-plan"
   },
   "apiVersion": "5.1.0",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Archilogic",
+    "email": "dev@archilogic.com"
   },
   "assets": {
     "icon": "assets/icon.png"
