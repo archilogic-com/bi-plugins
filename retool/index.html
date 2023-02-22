@@ -42,10 +42,15 @@
   }
 
   let spaceColorObjects = []
+  
   let defaultColors = {
     work: [159, 188, 255],
+    live: [246, 153, 63], 
     meet: [121, 204, 205],
     socialize: [241, 102, 100],
+    support: [226, 197, 247],
+    care: [201, 236, 253],
+    circulate: [227, 227, 227],
     other: [255, 255, 255]
   }
   
@@ -95,7 +100,6 @@
   }
   
   const startupSettings = {
-    planRotation: 90, 
     ui: { menu: false, scale: false },
     theme: {
       elements: {
@@ -117,6 +121,7 @@
   
   let hasLoaded = false
   let fpe
+  let highlightedIds = []
   let prevClickedSpaceId
   
   const FloorPlan = ({ triggerQuery, model, modelUpdate }) => {  
@@ -140,7 +145,7 @@
     function createDefaultColors(spaceResources){
       spaceColorObjects = []
       spaceResources.forEach(space => {
-        if (space.program === 'work' || space.program === 'meet' || space.program === 'socialize') {
+        if ( space.program || space.program !== 'void' ) {
           const color = defaultColors[space.program]
           const spaceColorObject = {
             space,
@@ -206,6 +211,7 @@
           })
         }
       })
+      highlightedIds = spaceIds
     }
     
     function resetSelection(){
@@ -234,18 +240,14 @@
     
     async function initFloorPlan(){
       if(!token || !floorId) return
-      if(!hasLoaded || hasLoaded !== floorId){
-        fpe = new FloorPlanEngine(container.current, {startupSettings})
-          await fpe.loadScene(floorId, {publishableToken: token})
-          hasLoaded = floorId
-          return fpe
-      } else {
+      fpe = new FloorPlanEngine(container.current, startupSettings)
+        await fpe.loadScene(floorId, {publishableToken: token})
+        hasLoaded = floorId
         return fpe
-      }
     }
     
     React.useEffect(() => {
-      if(fpe) return
+      if(fpe && hasLoaded === floorId) return
       if(container.current){
         initFloorPlan()
         .then((fpe) => {
@@ -255,9 +257,9 @@
     })
     React.useEffect(() => {
       if(!fpe) return
-      if(model.highlightSpaces.length){
+      if(!prevClickedSpaceId || prevClickedSpaceId !== model.selectedSpace){
         selectionUpdate(model.highlightSpaces)
-      }
+      } 
       onClick(fpe)    
     })
     
