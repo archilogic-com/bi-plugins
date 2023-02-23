@@ -7,3 +7,4 @@ coverage
 *.ini
 *.log.*
 .tmp
+webpack.statistics*
