@@ -1,7 +1,7 @@
 {
   "visual": {
     "name": "floorPlanVisualization",
-    "displayName": "Floor PlanV isualization",
+    "displayName": "Archilogic Floor Plan Visualization",
     "guid": "floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396",
     "visualClassName": "Visual",
     "version": "1.0.0",
