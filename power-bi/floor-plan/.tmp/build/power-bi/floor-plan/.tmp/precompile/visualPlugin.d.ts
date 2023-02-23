@@ -1,4 +1,0 @@
-import powerbiVisualsApi from "powerbi-visuals-api";
-import IVisualPlugin = powerbiVisualsApi.visuals.plugins.IVisualPlugin;
-declare var floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396: IVisualPlugin;
-export default floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396;
