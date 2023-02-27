@@ -5,6 +5,7 @@
     "rootDir": "../..",
     "baseUrl": "../..",
     "paths": {
+      "@bi-plugin-utils": ["./utils"],
       "@grafana-common": ["./grafana/common/index.ts"],
     },
   }

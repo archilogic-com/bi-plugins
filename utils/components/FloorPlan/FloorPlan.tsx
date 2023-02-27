@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import './FloorPlan.css'
 
@@ -31,7 +31,7 @@ const FloorPanel: React.FC<FloorOptions> = props => {
       }
     }
   }
-  useEffect(initFloorPlan)
+  setTimeout(initFloorPlan, 500)
 
   return (
     <div className="plan-wrapper">

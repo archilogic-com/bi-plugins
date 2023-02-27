@@ -2,7 +2,7 @@
 import colorGradient from 'javascript-color-gradient'
 
 export function valueToHex(color: number) {
-  var hex = color.toString(16)
+  const hex = color.toString(16)
   return hex
 }
 

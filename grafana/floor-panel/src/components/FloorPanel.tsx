@@ -2,7 +2,7 @@ import React from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import { PanelProps } from '@grafana/data'
 
-import { FloorPlan, getAssetsAndSpaces, getNodeByid, hexToRgb } from '@bi-plugin-utils'
+import { FloorPlan, getAssetsAndSpaces, getNodeById, hexToRgb } from '@bi-plugin-utils'
 import { getGradients, getSeries } from '@grafana-common'
 
 import { FloorOptions } from '../types'
@@ -33,7 +33,7 @@ export const FloorPanel: React.FC<Props> = props => {
     })
   }
   function handleSpaceId() {
-    const node = getNodeByid(floorPlan, nodeId)
+    const node = getNodeById(floorPlan, nodeId)
     if (node) {
       node?.setHighlight({ fill: HIGHLIGHT_COLOR })
     }

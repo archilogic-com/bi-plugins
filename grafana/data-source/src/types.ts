@@ -1,5 +1,5 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
-import { floorId, token } from '@grafana-common';
+import { floorId, token } from '@bi-plugin-utils';
 
 export interface MyQuery extends DataQuery {
   token: string;

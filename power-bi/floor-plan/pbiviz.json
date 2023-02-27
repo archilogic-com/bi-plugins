@@ -1,18 +1,18 @@
 {
   "visual": {
-    "name": "aggregateAssetPriceDemo",
-    "displayName": "aggregateAssetPriceDemo",
-    "guid": "aggregateAssetPriceDemoA490C0576F6341F78AFFF9E2E83E7396",
+    "name": "floorPlanVisualization",
+    "displayName": "Archilogic Floor Plan Visualization",
+    "guid": "floorPlanVisualizationA490C0576F6341F78AFFF9E2E83E7396",
     "visualClassName": "Visual",
     "version": "1.0.0",
-    "description": "",
-    "supportUrl": "",
-    "gitHubUrl": ""
+    "description": "Power BI Floor Plan Visualization",
+    "supportUrl": "https://developers.archilogic.com/",
+    "gitHubUrl": "https://github.com/archilogic-com/bi-plugins/tree/main/power-bi/floor-plan"
   },
   "apiVersion": "5.1.0",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Archilogic",
+    "email": "dev@archilogic.com"
   },
   "assets": {
     "icon": "assets/icon.png"
@@ -20,6 +20,5 @@
   "externalJS": null,
   "style": "style/visual.less",
   "capabilities": "capabilities.json",
-  "dependencies": null,
   "stringResources": []
 }

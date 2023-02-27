@@ -76,10 +76,10 @@
         }
       }
     },
-    "enableLegend": {
+    "enableGradient": {
       "properties": {
         "show": {
-          "displayName": "Show",
+          "displayName": "Use gradient",
           "type": {
             "bool": true
           }
