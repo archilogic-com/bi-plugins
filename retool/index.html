@@ -1,4 +1,8 @@
 <style>
+  @import url('https://fonts.googleapis.com/css?family=Avenir&display=swap');
+  * {
+    font-family: 'Avenir', serif !important;
+  }
   html, body {
     height: 100%;
     margin: 0;
@@ -44,13 +48,13 @@
   let spaceColorObjects = []
   
   let defaultColors = {
-    work: [159, 188, 255],
-    live: [246, 153, 63], 
-    meet: [121, 204, 205],
-    socialize: [241, 102, 100],
-    support: [226, 197, 247],
-    care: [201, 236, 253],
-    circulate: [227, 227, 227],
+    work: [0, 122, 255], 
+    meet: [196, 0, 150],
+    socialize: [255, 171, 0],
+    support: [12, 24, 41],
+    care: [189, 215, 255],
+    circulate: [84, 192, 114],
+    void: [255, 255, 255],
     other: [255, 255, 255]
   }
   
@@ -145,7 +149,7 @@
     function createDefaultColors(spaceResources){
       spaceColorObjects = []
       spaceResources.forEach(space => {
-        if ( space.program || space.program !== 'void' ) {
+        if ( space.program ) {
           const color = defaultColors[space.program]
           const spaceColorObject = {
             space,
@@ -153,7 +157,7 @@
           }
           spaceColorObject.space.node.setHighlight({
             fill: color,
-            fillOpacity: 1.0
+            fillOpacity: 0.4
           })
           spaceColorObjects.push(spaceColorObject)
         } else {
@@ -164,7 +168,7 @@
           }
           spaceColorObject.space.node.setHighlight({
             fill: color,
-            fillOpacity: 1.0
+            fillOpacity: 0.4
           })
           spaceColorObjects.push(spaceColorObject)
         }
@@ -189,7 +193,7 @@
           }
           spaceColorObject.space.node.setHighlight({
             fill: color,
-            fillOpacity: 1.0
+            fillOpacity: 0.4
           })
           spaceColorObjects.push(spaceColorObject)
         } 
@@ -198,16 +202,17 @@
     
     function selectionUpdate(spaceIds) {
       if(spaceIds.length === 0) return
+
       spaceColorObjects.forEach(spaceColorObject => {
         if (spaceIds.includes(spaceColorObject.space.id)) {
           spaceColorObject.space.node.setHighlight({
             fill: spaceColorObject.displayData.color,
-            fillOpacity: 1
+            fillOpacity: 0.4
           })
         } else {
           spaceColorObject.space.node.setHighlight({
             fill: spaceColorObject.displayData.color,
-            fillOpacity: 0.3
+            fillOpacity: 0.2
           })
         }
       })
@@ -218,7 +223,7 @@
       spaceColorObjects.forEach(spaceColorObject => {
         spaceColorObject.space.node.setHighlight({
           fill: spaceColorObject.displayData.color,
-          fillOpacity: 1
+          fillOpacity: 0.4
         })
       })
     }
@@ -255,6 +260,7 @@
         })
       }
     })
+    
     React.useEffect(() => {
       if(!fpe) return
       if(!prevClickedSpaceId || prevClickedSpaceId !== model.selectedSpace){
