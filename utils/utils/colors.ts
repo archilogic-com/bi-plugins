@@ -1,4 +1,3 @@
-// @ts-ignore-next-line
 import colorGradient from 'javascript-color-gradient'
 
 export function valueToHex(color: number) {

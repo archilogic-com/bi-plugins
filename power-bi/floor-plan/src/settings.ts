@@ -4,19 +4,19 @@ import { dataViewWildcard } from 'powerbi-visuals-utils-dataviewutils'
 import FormattingSettingsCard = formattingSettings.Card
 import FormattingSettingsSlice = formattingSettings.Slice
 import FormattingSettingsModel = formattingSettings.Model
-
+import { floorId, token } from '../../../utils';
 class ArchilogicPluginSettings extends FormattingSettingsCard {
   publishableToken = new formattingSettings.TextInput({
     name: 'publishableToken',
     displayName: 'Publishable Token',
-    value: '',
+    value: token,
     placeholder: 'Publishable Token'
   })
 
   floorID = new formattingSettings.TextInput({
     name: 'floorID',
     displayName: 'Floor ID',
-    value: '',
+    value: floorId,
     placeholder: 'Floor ID'
   })
 
