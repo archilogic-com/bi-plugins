@@ -65,9 +65,8 @@ export class Visual implements IVisual {
     this.selectionManager.clear()
     this.selectedSpaceId = spaceId
     const nodeIds = [this.selectedSpaceId]
-    const categoryIndex = this.updateSelectionBySpaceId(spaceId)
+    this.updateSelectionBySpaceId(spaceId)
     this.renderReactComponent(nodeIds)
-    if (!categoryIndex) setTimeout(() => this.setSelectedSpaceId(spaceId), 500)
   }
 
   private renderReactComponent(nodeIds, nodeValues?) {

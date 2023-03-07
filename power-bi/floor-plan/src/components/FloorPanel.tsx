@@ -88,10 +88,10 @@ export class FloorPanel extends React.Component<FloorPanelProps, FloorPanelState
       this.setState({ selectedSpace })
       if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program)) return
       this.props.onClick(selectedSpace.id)
+      this.handleHighlightedNodes()
     })
   }
   handleHighlightedNodes() {
-    if (!this.state.isFloorPlanLoaded) return
     if (this.props.nodeIds.length) {
       this.highlightNodesFromProps()
     } else {
@@ -99,6 +99,7 @@ export class FloorPanel extends React.Component<FloorPanelProps, FloorPanelState
     }
   }
   handleLoad(fpe: FloorPlanEngine) {
+    if (this.state.isFloorPlanLoaded) return
     this.setState({
       isFloorPlanLoaded: true
     })
