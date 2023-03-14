@@ -1,6 +1,6 @@
-# Business Intelligent Plugins for 3D Visualization
+# Business Intelligence Plugins for Spatial Data Visualization
 
-This GitHub repository contains plugins for Grafana and Power BI for creating 3D visualizations for business intelligence data. It also includes a `utils` folder with global functions and components.
+This GitHub repository contains plugins for Grafana and Power BI for creating visualizations for business intelligence data. It also includes a `utils` folder with global functions and components.
 
 ## Grafana Plugin
 
