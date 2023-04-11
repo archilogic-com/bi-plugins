@@ -29,9 +29,9 @@ interface FloorPanelState {
 const categoriesToHighlight = ['work', 'meet', 'socialize']
 
 const defaultColors = {
-  work: [159, 188, 255],
-  meet: [121, 204, 205],
-  socialize: [241, 102, 100],
+  work: [19, 141, 255],
+  meet: [18, 35, 159],
+  socialize: [230, 108, 55],
   other: [255, 255, 255]
 }
 
@@ -88,10 +88,10 @@ export class FloorPanel extends React.Component<FloorPanelProps, FloorPanelState
       this.setState({ selectedSpace })
       if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program)) return
       this.props.onClick(selectedSpace.id)
-      this.handleHighlightedNodes()
     })
   }
   handleHighlightedNodes() {
+    if (!this.state.isFloorPlanLoaded) return
     if (this.props.nodeIds.length) {
       this.highlightNodesFromProps()
     } else {
@@ -99,7 +99,6 @@ export class FloorPanel extends React.Component<FloorPanelProps, FloorPanelState
     }
   }
   handleLoad(fpe: FloorPlanEngine) {
-    if (this.state.isFloorPlanLoaded) return
     this.setState({
       isFloorPlanLoaded: true
     })

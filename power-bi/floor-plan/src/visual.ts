@@ -24,13 +24,26 @@ export class Visual implements IVisual {
   private gradient
   private dataView
   private selectedSpaceId: string
+  private allCategories
 
   constructor(options: VisualConstructorOptions) {
     this.target = options.element
     this.formattingSettingsService = new FormattingSettingsService()
     this.host = options.host
     this.selectionManager = this.host.createSelectionManager()
+    this.handleContextMenu()
     this.selectionManager.clear()
+  }
+
+  private handleContextMenu() {
+    // @ts-ignore
+    this.target.oncontextmenu = (mouseEvent: PointerEvent, dataPoint) => {
+      this.selectionManager.showContextMenu(dataPoint ? dataPoint: {}, {
+        x: mouseEvent.clientX,
+        y: mouseEvent.clientY
+      });
+      mouseEvent.preventDefault();
+    };
   }
 
   private setGradient(objectsRules) {
@@ -46,7 +59,7 @@ export class Visual implements IVisual {
 
   private updateSelectionBySpaceId(spaceId: string) {
     let categoryIndex
-    const categories = this.dataView?.categorical?.categories
+    const categories = this.allCategories
     categories.forEach(category => {
       const valueIndex = category.values.findIndex(value => value === spaceId)
       if (valueIndex) categoryIndex = category?.identity?.[valueIndex]?.identityIndex
@@ -90,6 +103,8 @@ export class Visual implements IVisual {
     )
 
     this.dataView = options.dataViews[0]
+    if (!this.allCategories?.length) this.allCategories = this.dataView?.categorical?.categories
+
     const { objectsRules } = this.dataView.metadata as any
     const nodeIds = this.dataView.categorical.categories[0].values
     const nodeValues = this.dataView.categorical.values[0].values
