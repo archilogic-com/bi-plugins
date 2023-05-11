@@ -10,7 +10,7 @@ interface FloorOptions {
   onLoad?: (floorPlan: FloorPlanEngine) => void
 }
 
-const FLOOR_PLAN_ID = 'floor-plan'
+const FLOOR_PLAN_ID = `floor-plan-${new Date().getTime()}`
 let floorPlan: FloorPlanEngine
 
 const FloorPanel: React.FC<FloorOptions> = props => {
