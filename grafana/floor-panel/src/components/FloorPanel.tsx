@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import { PanelProps } from '@grafana/data'
 
@@ -10,10 +10,10 @@ import { FloorOptions } from '../types'
 interface Props extends PanelProps<FloorOptions> {}
 const HIGHLIGHT_COLOR: [number, number, number] = [100, 200, 100]
 
-let floorPlan: FloorPlanEngine
-let isFloorPlanLoaded = false
-
 export const FloorPanel: React.FC<Props> = props => {
+  const [floorPlan, setFloorPlan] = useState(undefined as FloorPlanEngine)
+  const [isFloorPlanLoaded, setIsFloorPlanLoaded] = useState(false)
+
   const { id, token, nodeId, colorFrom, colorTo } = props.options
   const { data } = props
   const { ids, values } = getSeries(data)
@@ -39,8 +39,8 @@ export const FloorPanel: React.FC<Props> = props => {
     }
   }
   function handleEvents(fpe: FloorPlanEngine) {
-    isFloorPlanLoaded = true
-    floorPlan = fpe
+    setIsFloorPlanLoaded(true)
+    setFloorPlan(fpe)
     handleInputSourceData()
     handleSpaceId()
   }
