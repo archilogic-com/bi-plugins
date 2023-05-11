@@ -6,7 +6,7 @@
   "metrics": true,
   "streaming": true,
   "info": {
-    "description": "Generate sample data for Archilogic Flor Plan panel",
+    "description": "Generate sample data for Archilogic Floor Plan panel",
     "author": {
       "name": "Archilogic"
     },
