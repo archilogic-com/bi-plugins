@@ -7,7 +7,7 @@
   "author": "Archilogic",
   "license": "",
   "dependencies": {
-    "@archilogic/floor-plan-sdk": "^5.0.0-beta.0",
+    "@archilogic/floor-plan-sdk": "4.4.1",
     "javascript-color-gradient": "^2.4.4"
   },
   "devDependencies": {
@@ -16,7 +16,7 @@
     "prettier": "2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "4.5.4"
+    "typescript": "5.3.3"
   },
   "lint-staged": {
     "*": "prettier -w -u"
