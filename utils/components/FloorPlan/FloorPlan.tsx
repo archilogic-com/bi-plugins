@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useState } from 'react'
-import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.umd.js'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import './FloorPlan.css'
 
 interface FloorOptions {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.umd.js'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.cjs.js'
 
 import {
   generateGradients,
