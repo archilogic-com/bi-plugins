@@ -1,16 +1,17 @@
-import React from 'react'
-import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
+import React, { useState, useEffect } from 'react'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.umd.js'
 
 import {
-  FloorPlan,
   generateGradients,
   getAssetsAndSpaces,
   getSpaceByPosition,
   hexToRgb,
-  getNodeById
+  getNodeById,
+  FloorPlan
 } from '../../../../utils'
 
 let floorPlan: FloorPlanEngine
+
 interface FloorPanelProps {
   publishableToken: string
   floorID: string
@@ -19,11 +20,6 @@ interface FloorPanelProps {
   gradient?: any
   isGradient: any
   onClick: (categoryIndex: string) => void
-}
-
-interface FloorPanelState {
-  isFloorPlanLoaded: any
-  selectedSpace: any
 }
 
 const categoriesToHighlight = ['work', 'meet', 'socialize']
@@ -35,89 +31,99 @@ const defaultColors = {
   other: [255, 255, 255]
 }
 
-export class FloorPanel extends React.Component<FloorPanelProps, FloorPanelState> {
-  constructor(props) {
-    super(props)
-    this.state = { selectedSpace: null, isFloorPlanLoaded: false } as FloorPanelState
-  }
-  getGradientColorBySpaceValue(space) {
-    const gradient = generateGradients(this.props.gradient.min.color, this.props.gradient.max.color)
-    const valueIndex = this.props.nodeIds?.indexOf(space.id)
-    const gradientIndex = Math.floor(this.props.nodeValues?.[valueIndex] * 10)
+export const FloorPanel = (props: FloorPanelProps) => {
+  const [state, setState] = useState<{ selectedSpace: any; isFloorPlanLoaded: boolean }>({
+    selectedSpace: null,
+    isFloorPlanLoaded: false
+  })
+
+  const getGradientColorBySpaceValue = (space) => {
+    const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
+    const valueIndex = props.nodeIds?.indexOf(space.id)
+    const gradientIndex = Math.floor(props.nodeValues?.[valueIndex] * 10)
     if (gradientIndex) {
       const rgb = gradient[gradientIndex]
       return hexToRgb(rgb)
     }
   }
-  getHighlightColor(space) {
+
+  const getHighlightColor = (space) => {
     let color = defaultColors[space.program]
-    if (this.props.isGradient.value && this.props.gradient.min) {
-      const gradientColor = this.getGradientColorBySpaceValue(space)
+    if (props.isGradient.value && props.gradient.min) {
+      const gradientColor = getGradientColorBySpaceValue(space)
       if (gradientColor) color = gradientColor
     }
     return color
   }
-  highlightNode(space, fillOpacity = 1.0) {
+
+  const highlightNode = (space, fillOpacity = 1.0) => {
     if (!space) return
     if (categoriesToHighlight.includes(space.program)) {
-      const fillColor = this.getHighlightColor(space)
+      const fillColor = getHighlightColor(space)
       space.node.setHighlight({
         fill: fillColor,
         fillOpacity
       })
     }
   }
-  highlightNodes(fillOpacity = 1.0) {
+
+  const highlightNodes = (fillOpacity = 1.0) => {
     const nodes = getAssetsAndSpaces(floorPlan)
     nodes.forEach((space: any) => {
-      this.highlightNode(space, fillOpacity)
+      highlightNode(space, fillOpacity)
     })
   }
-  highlightNodesFromProps() {
-    this.highlightNodes(0.5)
-    this.props.nodeIds.forEach(nodeId => {
+
+  const highlightNodesFromProps = () => {
+    highlightNodes(0.5)
+    props.nodeIds.forEach(nodeId => {
       const space = getNodeById(floorPlan, nodeId)
-      this.highlightNode(space)
+      highlightNode(space)
     })
   }
-  handleClick() {
+
+  const handleClick = () => {
     floorPlan.on('click', event => {
       const position: number[] = event.pos
       const selectedSpace = getSpaceByPosition(floorPlan, position)
-      if (this.state.selectedSpace === selectedSpace) return
-      this.setState({ selectedSpace })
+      if (state.selectedSpace === selectedSpace) return
+      setState(prevState => ({ ...prevState, selectedSpace }))
       if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program)) return
-      this.props.onClick(selectedSpace.id)
+      props.onClick(selectedSpace.id)
     })
-  }
-  handleHighlightedNodes() {
-    if (!this.state.isFloorPlanLoaded) return
-    if (this.props.nodeIds.length) {
-      this.highlightNodesFromProps()
-    } else {
-      this.highlightNodes()
-    }
-  }
-  handleLoad(fpe: FloorPlanEngine) {
-    this.setState({
-      isFloorPlanLoaded: true
-    })
-    floorPlan = fpe
-    this.handleHighlightedNodes()
-    this.handleClick()
   }
 
-  render() {
-    this.handleHighlightedNodes()
-    return (
-      <div id="app">
-        <FloorPlan
-          id={this.props.floorID}
-          token={this.props.publishableToken}
-          loaded={this.state.isFloorPlanLoaded}
-          onLoad={this.handleLoad.bind(this)}
-        />
-      </div>
-    )
+  const handleHighlightedNodes = () => {
+    if (!state.isFloorPlanLoaded) return
+    if (props.nodeIds.length) {
+      highlightNodesFromProps()
+    } else {
+      highlightNodes()
+    }
   }
+
+  const handleLoad = (fpe: FloorPlanEngine) => {
+    setState(prevState => ({
+      ...prevState,
+      isFloorPlanLoaded: true
+    }))
+    floorPlan = fpe
+    handleHighlightedNodes()
+    handleClick()
+  }
+
+  useEffect(() => {
+    handleHighlightedNodes()
+  })
+
+  return (
+    <div id="app">
+      <FloorPlan
+        id={props.floorID}
+        token={props.publishableToken}
+        loaded={state.isFloorPlanLoaded}
+        onLoad={handleLoad}
+      />
+    </div>
+  )
 }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
+import React, { FC, ReactNode, useState } from 'react'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.umd.js'
 import './FloorPlan.css'
 
 interface FloorOptions {
@@ -10,7 +10,7 @@ interface FloorOptions {
   onLoad?: (floorPlan: FloorPlanEngine) => void
 }
 
-const FloorPanel: React.FC<FloorOptions> = props => {
+const FloorPlan: FC<FloorOptions> = (props): JSX.Element => {
   const [floorPlan, setFloorPlan] = useState(undefined as FloorPlanEngine);
   const floorPlanId = `floor-plan-${new Date().getTime()}`
   const tokenOptions = {
@@ -40,4 +40,4 @@ const FloorPanel: React.FC<FloorOptions> = props => {
   )
 }
 
-export default FloorPanel
+export default FloorPlan

@@ -1,4 +1,4 @@
-import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk/dist/fpe.umd.js'
 
 export const getAssetsAndSpaces = (floorPlan: FloorPlanEngine) => {
   if (!floorPlan) return []
