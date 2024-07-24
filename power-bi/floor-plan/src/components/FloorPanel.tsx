@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FloorPlanEngine } from './fpe.cjs.js'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 
 import {
   generateGradients,
@@ -9,8 +9,6 @@ import {
   getNodeById,
   FloorPlan
 } from '../../../../utils'
-
-let floorPlan: FloorPlanEngine
 
 interface FloorPanelProps {
   publishableToken: string
@@ -32,24 +30,25 @@ const defaultColors = {
 }
 
 export const FloorPanel = (props: FloorPanelProps) => {
-  const [state, setState] = useState<{ selectedSpace: any; isFloorPlanLoaded: boolean }>({
+  const [state, setState] = useState<{ selectedSpace: any; isFloorPlanLoaded: boolean; floorPlan: FloorPlanEngine }>({
     selectedSpace: null,
-    isFloorPlanLoaded: false
+    isFloorPlanLoaded: false,
+    floorPlan: null
   })
 
   const getGradientColorBySpaceValue = (space) => {
     const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
     const valueIndex = props.nodeIds?.indexOf(space.id)
-    const gradientIndex = Math.floor(props.nodeValues?.[valueIndex] * 10)
-    if (gradientIndex) {
-      const rgb = gradient[gradientIndex]
+    const gradientIndex = Math.floor(props.nodeValues?.[valueIndex])
+    if (valueIndex) {
+      const rgb = gradient[valueIndex]
       return hexToRgb(rgb)
     }
   }
 
   const getHighlightColor = (space) => {
     let color = defaultColors[space.program]
-    if (props.isGradient.value && props.gradient.min) {
+    if (props.isGradient.value && props.gradient?.min) {
       const gradientColor = getGradientColorBySpaceValue(space)
       if (gradientColor) color = gradientColor
     }
@@ -68,7 +67,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }
 
   const highlightNodes = (fillOpacity = 1.0) => {
-    const nodes = getAssetsAndSpaces(floorPlan)
+    const nodes = getAssetsAndSpaces(state.floorPlan)
     nodes.forEach((space: any) => {
       highlightNode(space, fillOpacity)
     })
@@ -77,15 +76,15 @@ export const FloorPanel = (props: FloorPanelProps) => {
   const highlightNodesFromProps = () => {
     highlightNodes(0.5)
     props.nodeIds.forEach(nodeId => {
-      const space = getNodeById(floorPlan, nodeId)
+      const space = getNodeById(state.floorPlan, nodeId)
       highlightNode(space)
     })
   }
 
   const handleClick = () => {
-    floorPlan.on('click', event => {
+    state.floorPlan?.on('click', event => {
       const position: number[] = event.pos
-      const selectedSpace = getSpaceByPosition(floorPlan, position)
+      const selectedSpace = getSpaceByPosition(state.floorPlan, position)
       if (state.selectedSpace === selectedSpace) return
       setState(prevState => ({ ...prevState, selectedSpace }))
       if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program)) return
@@ -105,9 +104,9 @@ export const FloorPanel = (props: FloorPanelProps) => {
   const handleLoad = (fpe: FloorPlanEngine) => {
     setState(prevState => ({
       ...prevState,
-      isFloorPlanLoaded: true
+      isFloorPlanLoaded: true,
+      floorPlan: fpe
     }))
-    floorPlan = fpe
     handleHighlightedNodes()
     handleClick()
   }

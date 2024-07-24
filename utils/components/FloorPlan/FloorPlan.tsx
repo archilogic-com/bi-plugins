@@ -1,5 +1,5 @@
-import React, { FC, ReactNode, useState } from 'react'
-import { FloorPlanEngine } from '../../fpe.cjs.js'
+import React, { FC } from 'react'
+import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import './FloorPlan.css'
 
 interface FloorOptions {
@@ -11,7 +11,6 @@ interface FloorOptions {
 }
 
 const FloorPlan: FC<FloorOptions> = (props): JSX.Element => {
-  const [floorPlan, setFloorPlan] = useState(undefined as FloorPlanEngine);
   const floorPlanId = `floor-plan-${new Date().getTime()}`
   const tokenOptions = {
     publishableAccessToken: props.token
@@ -20,15 +19,12 @@ const FloorPlan: FC<FloorOptions> = (props): JSX.Element => {
   const initFloorPlan = () => {
     const container = document.getElementById(floorPlanId)
     if (container) {
-      if (!props.loaded && !floorPlan) {
+      if (!props.loaded) {
         const fpe = new FloorPlanEngine({ container, options: props.startupOptions })
         fpe.loadScene(props.id, tokenOptions).then(() => {
-          if (props.onLoad) props.onLoad(floorPlan)
+          if (props.onLoad) props.onLoad(fpe)
         })
-        setFloorPlan(fpe)
-      } else {
-        if (props.onLoad) props.onLoad(floorPlan)
-      }
+      } 
     }
   }
   setTimeout(initFloorPlan, 500)
