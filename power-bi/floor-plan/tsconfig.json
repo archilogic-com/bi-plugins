@@ -20,6 +20,5 @@
       "@bi-plugin-utils": ["../../utils"]
     }
   },
-  "exclude": ["node_modules"],
   "files": ["./src/visual.ts"]
 }
