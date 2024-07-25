@@ -20,15 +20,6 @@ interface FloorPanelProps {
   onClick: (categoryIndex: string) => void
 }
 
-const categoriesToHighlight = ['work', 'meet', 'socialize']
-
-const defaultColors = {
-  work: [19, 141, 255],
-  meet: [18, 35, 159],
-  socialize: [230, 108, 55],
-  other: [255, 255, 255]
-}
-
 export const FloorPanel = (props: FloorPanelProps) => {
   const [state, setState] = useState<{ selectedSpace: any; isFloorPlanLoaded: boolean; floorPlan: FloorPlanEngine }>({
     selectedSpace: null,
@@ -47,23 +38,18 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }
 
   const getHighlightColor = (space) => {
-    let color = defaultColors[space.program]
     if (props.isGradient.value && props.gradient?.min) {
-      const gradientColor = getGradientColorBySpaceValue(space)
-      if (gradientColor) color = gradientColor
+      return getGradientColorBySpaceValue(space)
     }
-    return color
   }
 
   const highlightNode = (space, fillOpacity = 1.0) => {
     if (!space) return
-    if (categoriesToHighlight.includes(space.program)) {
-      const fillColor = getHighlightColor(space)
-      space.node.setHighlight({
-        fill: fillColor,
-        fillOpacity
-      })
-    }
+    const fillColor = getHighlightColor(space)
+    space.node.setHighlight({
+      fill: fillColor,
+      fillOpacity
+    })
   }
 
   const highlightNodes = (fillOpacity = 1.0) => {
@@ -87,7 +73,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
       const selectedSpace = getSpaceByPosition(state.floorPlan, position)
       if (state.selectedSpace === selectedSpace) return
       setState(prevState => ({ ...prevState, selectedSpace }))
-      if (!selectedSpace || !categoriesToHighlight.includes(selectedSpace.program)) return
+      if (!selectedSpace) return
       props.onClick(selectedSpace.id)
     })
   }
