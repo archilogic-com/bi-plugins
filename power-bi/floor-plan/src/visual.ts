@@ -82,8 +82,13 @@ export class Visual implements IVisual {
     this.renderReactComponent(nodeIds)
   }
 
+  private clearSelection() {
+    this.selectionManager.clear()
+  }
+
   private renderReactComponent(nodeIds, nodeValues?) {
-    const onClick = this.setSelectedSpaceId.bind(this)
+    const setSelectedSpaceId = this.setSelectedSpaceId.bind(this)
+    const clearSelection = this.clearSelection.bind(this)
     const reactElement = React.createElement(FloorPanel, {
       publishableToken: this.formattingSettings.archilogicPluginSettings.publishableToken.value,
       floorID: this.formattingSettings.archilogicPluginSettings.floorID.value,
@@ -91,7 +96,8 @@ export class Visual implements IVisual {
       gradient: this.gradient,
       nodeValues,
       nodeIds,
-      onClick
+      setSelectedSpaceId,
+      clearSelection
     })
     ReactDOM.render(reactElement, this.target)
   }

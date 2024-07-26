@@ -17,7 +17,8 @@ interface FloorPanelProps {
   nodeValues?: any[]
   gradient?: any
   isGradient: any
-  onClick: (categoryIndex: string) => void
+  setSelectedSpaceId: (categoryIndex: string) => void
+  clearSelection?: () => void
 }
 
 export const FloorPanel = (props: FloorPanelProps) => {
@@ -101,23 +102,26 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }, [props.gradient])
 
   useEffect(() => {
-    if (floorPlan) {
-      const handleClickEvent = event => {
-        const position: number[] = event.pos
-        const spaceByPosition = getSpaceByPosition(floorPlan, position)
-        if (selectedSpace === spaceByPosition) { 
-          return
-        }
-        setSelectedSpace(spaceByPosition)
-        if (!spaceByPosition) {
-          return
-        }
-        props.onClick(spaceByPosition.id)
+    if (!floorPlan) return
+
+    const handleClickEvent = event => {
+      const position: number[] = event.pos
+      const spaceByPosition = getSpaceByPosition(floorPlan, position)
+      if (selectedSpace === spaceByPosition) { 
+        return
       }
-  
-      floorPlan.on('click', handleClickEvent)
+      setSelectedSpace(spaceByPosition)
+      if (!spaceByPosition) {
+        props.clearSelection()
+        highlightNodes()
+        return
+      }
+      props.setSelectedSpaceId(spaceByPosition.id)
     }
-  }, [floorPlan, props.onClick])
+
+    floorPlan.on('click', handleClickEvent)
+    
+  }, [floorPlan, props.setSelectedSpaceId])
 
   return (
     <div id="app">
