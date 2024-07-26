@@ -24,15 +24,28 @@ export const FloorPanel = (props: FloorPanelProps) => {
   const [floorPlan, setFloorplan] = useState(null)
   const [isFloorPlanLoaded, setIsFloorPlanLoaded] = useState(false)
   const [selectedSpace, setSelectedSpace] = useState(null)
+  const [colorMap, setColorMap] = useState<Map<string, number[]>>(new Map())
 
   const getGradientColorBySpaceValue = (space) => {
     const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
     const valueIndex = props.nodeIds?.indexOf(space.id)
     const gradientIndex = Math.floor(props.nodeValues?.[valueIndex])
-    if (valueIndex) {
-      const rgb = gradient[valueIndex]
+    if (gradientIndex) {
+      const rgb = gradient[gradientIndex]
       return hexToRgb(rgb)
     }
+  }
+
+  const generateColorMap = (fpe: FloorPlanEngine) => {
+    const map = new Map<string, number[]>()
+    props.nodeIds.forEach(nodeId => {
+      const space = getNodeById(fpe, nodeId)
+      if (space) {
+        const fillColor = getHighlightColor(space)
+        map.set(space.id, fillColor)
+      }
+    })
+    return map
   }
 
   const getHighlightColor = (space) => {
@@ -43,7 +56,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   const highlightNode = (space, fillOpacity = 1.0) => {
     if (!space) return
-    const fillColor = getHighlightColor(space)
+    const fillColor = colorMap.get(space.id) ?? getHighlightColor(space)
     space.node.setHighlight({
       fill: fillColor,
       fillOpacity
@@ -66,7 +79,6 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }
 
   const handleHighlightedNodes = () => {
-    if (!isFloorPlanLoaded) return
     if (props.nodeIds.length) {
       highlightNodesFromProps()
     } else {
@@ -75,14 +87,18 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }
 
   const handleLoad = (fpe: FloorPlanEngine) => {
-     handleHighlightedNodes()
      setFloorplan(fpe)
      setIsFloorPlanLoaded(true)
+     setColorMap(generateColorMap(fpe))
   }
 
   useEffect(() => {
     handleHighlightedNodes()
-  })
+  }, [floorPlan, selectedSpace, props.nodeIds, colorMap])
+
+  useEffect(() => {
+    setColorMap(generateColorMap(floorPlan))
+  }, [props.gradient])
 
   useEffect(() => {
     if (floorPlan) {
@@ -100,10 +116,6 @@ export const FloorPanel = (props: FloorPanelProps) => {
       }
   
       floorPlan.on('click', handleClickEvent)
-  
-      return () => {
-        floorPlan.off('click', handleClickEvent)
-      }
     }
   }, [floorPlan, props.onClick])
 
