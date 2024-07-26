@@ -30,9 +30,8 @@ export const FloorPanel = (props: FloorPanelProps) => {
   const getGradientColorBySpaceValue = (space) => {
     const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
     const valueIndex = props.nodeIds?.indexOf(space.id)
-    const gradientIndex = Math.floor(props.nodeValues?.[valueIndex])
-    if (gradientIndex) {
-      const rgb = gradient[gradientIndex]
+    if (valueIndex) {
+      const rgb = gradient[valueIndex]
       return hexToRgb(rgb)
     }
   }
