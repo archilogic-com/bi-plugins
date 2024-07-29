@@ -75,7 +75,6 @@ export const FloorPanel = (props: FloorPanelProps) => {
       highlightNodes(0.5)
       highlightNode(selectedSpace)
     }
-  
 
   const handleHighlightedNodes = () => {
     if (props.highlightedDataEntries?.size > 0) {
@@ -122,17 +121,6 @@ export const FloorPanel = (props: FloorPanelProps) => {
     floorPlan.on('click', handleClickEvent)
     
   }, [floorPlan, selectedSpace])
-
-  useEffect(() => {
-    if (props.highlightedDataEntries?.size > 0){
-      // highlightNodes(0.5)
-      // for (const nodeId of props.highlightedDataEntries.keys()) {
-      //   const space = getNodeById(floorPlan, nodeId)
-      //   highlightNode(space)
-      // }
-    }
-
-  }, [props.highlightedDataEntries])
 
   return (
     <div id="app">

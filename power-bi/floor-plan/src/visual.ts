@@ -50,7 +50,7 @@ export class Visual implements IVisual {
     if (objectsRules) {
       const gradient = objectsRules.dataPoint.defaultColor.gradient
       const gradientOptions = gradient.options
-      const gradientKey = Object.keys(gradientOptions)?.[0]
+      const gradientKey = Object.keys(gradientOptions)[0]
       this.gradient = gradientOptions[gradientKey]
     } else {
       this.gradient = null

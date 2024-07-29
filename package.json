@@ -7,7 +7,7 @@
   "author": "Archilogic",
   "license": "",
   "dependencies": {
-    "@archilogic/floor-plan-sdk": "5.0.0-beta.0",
+    "@archilogic/floor-plan-sdk": "^5.0.0-beta.0",
     "javascript-color-gradient": "^2.4.4"
   },
   "devDependencies": {
