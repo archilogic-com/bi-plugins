@@ -43,7 +43,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   const getHighlightColor = (space) => {
     if (props.isGradient.value && props.gradient?.min && props.gradient?.max) {
-      return getGradientColorBySpaceValue(props.gradient.min, props.gradient?.max, props.allDataEntries, space.id)
+      return getGradientColorBySpaceValue(props.gradient.min?.color, props.gradient.max?.color, props.allDataEntries, space.id)
     }
   }
 
