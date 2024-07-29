@@ -116,7 +116,7 @@ export class Visual implements IVisual {
     const nodeValues = this.dataView.categorical.values?.[0].values ?? []
     const highlightedNodeValues = this.dataView.categorical.values?.[0].highlights ?? []
     
-    const allDataEntries = new Map(nodeIds.map((key, index) => [key, nodeValues[index]]))
+    const allDataEntries = new Map(nodeIds.map((key, index) => [key, nodeValues[index]]) ?? [])
     const highlightedDataEntries = new Map()
     for (let i = 0; i < nodeIds.length; i++) {
       if (highlightedNodeValues.length > 0 && highlightedNodeValues[i] != null) {

@@ -7,7 +7,8 @@ import {
   getSpaceByPosition,
   hexToRgb,
   getNodeById,
-  FloorPlan
+  FloorPlan,
+  getGradientColorBySpaceValue
 } from '../../../../utils'
 
 interface FloorPanelProps {
@@ -27,15 +28,6 @@ export const FloorPanel = (props: FloorPanelProps) => {
   const [selectedSpace, setSelectedSpace] = useState(null)
   const [colorMap, setColorMap] = useState<Map<string, number[]>>(new Map())
 
-  const getGradientColorBySpaceValue = (space) => {
-    const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
-    const valueIndex = Array.from(props.allDataEntries.keys()).indexOf(space.id)
-    if (valueIndex) {
-      const rgb = gradient[valueIndex]
-      return hexToRgb(rgb)
-    }
-  }
-
   const generateColorMap = (fpe: FloorPlanEngine) => {
     const map = new Map<string, number[]>()
     for (const nodeId of props.allDataEntries.keys()) {
@@ -50,8 +42,8 @@ export const FloorPanel = (props: FloorPanelProps) => {
   }
 
   const getHighlightColor = (space) => {
-    if (props.isGradient.value && props.gradient?.min) {
-      return getGradientColorBySpaceValue(space)
+    if (props.isGradient.value && props.gradient?.min && props.gradient?.max) {
+      return getGradientColorBySpaceValue(props.gradient.min, props.gradient?.max, props.allDataEntries, space.id)
     }
   }
 
