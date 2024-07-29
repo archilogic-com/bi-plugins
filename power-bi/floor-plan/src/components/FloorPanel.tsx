@@ -13,8 +13,8 @@ import {
 interface FloorPanelProps {
   publishableToken: string
   floorID: string
-  nodeIds?: any[]
-  nodeValues?: any[]
+  allDataEntries: Map<string, any>
+  highlightedDataEntries: Map<string, any>
   gradient?: any
   isGradient: any
   setSelectedSpaceId: (categoryIndex: string) => void
@@ -29,7 +29,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   const getGradientColorBySpaceValue = (space) => {
     const gradient = generateGradients(props.gradient.min.color, props.gradient.max.color)
-    const valueIndex = props.nodeIds?.indexOf(space.id)
+    const valueIndex = Array.from(props.allDataEntries.keys()).indexOf(space.id)
     if (valueIndex) {
       const rgb = gradient[valueIndex]
       return hexToRgb(rgb)
@@ -38,13 +38,14 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   const generateColorMap = (fpe: FloorPlanEngine) => {
     const map = new Map<string, number[]>()
-    props.nodeIds.forEach(nodeId => {
+    for (const nodeId of props.allDataEntries.keys()) {
       const space = getNodeById(fpe, nodeId)
       if (space) {
         const fillColor = getHighlightColor(space)
         map.set(space.id, fillColor)
       }
-    })
+    }
+
     return map
   }
 
@@ -72,15 +73,23 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   const highlightNodesFromProps = () => {
     highlightNodes(0.5)
-    props.nodeIds.forEach(nodeId => {
+    for (const nodeId of props.highlightedDataEntries.keys()) {
       const space = getNodeById(floorPlan, nodeId)
       highlightNode(space)
-    })
+    }
   }
 
+  const highlightSelectedSpace = () => {
+      highlightNodes(0.5)
+      highlightNode(selectedSpace)
+    }
+  
+
   const handleHighlightedNodes = () => {
-    if (props.nodeIds.length) {
+    if (props.highlightedDataEntries?.size > 0) {
       highlightNodesFromProps()
+    } else if (selectedSpace) {
+      highlightSelectedSpace()
     } else {
       highlightNodes()
     }
@@ -94,7 +103,7 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
   useEffect(() => {
     handleHighlightedNodes()
-  }, [floorPlan, selectedSpace, props.nodeIds, colorMap])
+  }, [floorPlan, selectedSpace, props.allDataEntries, props.highlightedDataEntries, colorMap, props.setSelectedSpaceId])
 
   useEffect(() => {
     setColorMap(generateColorMap(floorPlan))
@@ -120,7 +129,18 @@ export const FloorPanel = (props: FloorPanelProps) => {
 
     floorPlan.on('click', handleClickEvent)
     
-  }, [floorPlan, props.setSelectedSpaceId])
+  }, [floorPlan, selectedSpace])
+
+  useEffect(() => {
+    if (props.highlightedDataEntries?.size > 0){
+      // highlightNodes(0.5)
+      // for (const nodeId of props.highlightedDataEntries.keys()) {
+      //   const space = getNodeById(floorPlan, nodeId)
+      //   highlightNode(space)
+      // }
+    }
+
+  }, [props.highlightedDataEntries])
 
   return (
     <div id="app">

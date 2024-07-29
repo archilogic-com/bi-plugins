@@ -59,6 +59,7 @@
       }
     }
   ],
+  "supportsHighlight": true,
   "objects": {
     "archilogicPlugin": {
       "properties": {

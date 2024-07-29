@@ -86,7 +86,7 @@ export class Visual implements IVisual {
     this.selectionManager.clear()
   }
 
-  private renderReactComponent(nodeIds, nodeValues?) {
+  private renderReactComponent(allDataEntries, highlightedDataEntries?) {
     const setSelectedSpaceId = this.setSelectedSpaceId.bind(this)
     const clearSelection = this.clearSelection.bind(this)
     const reactElement = React.createElement(FloorPanel, {
@@ -94,8 +94,8 @@ export class Visual implements IVisual {
       floorID: this.formattingSettings.archilogicPluginSettings.floorID.value,
       isGradient: this.formattingSettings.enableGradient.slices[0],
       gradient: this.gradient,
-      nodeValues,
-      nodeIds,
+      allDataEntries,
+      highlightedDataEntries,
       setSelectedSpaceId,
       clearSelection
     })
@@ -112,10 +112,20 @@ export class Visual implements IVisual {
     if (!this.allCategories?.length) this.allCategories = this.dataView?.categorical?.categories
 
     const { objectsRules } = this.dataView.metadata as any
-    const nodeIds = this.dataView.categorical.categories[0].values
-    const nodeValues = this.dataView.categorical.values[0].values
+    const nodeIds = this.dataView.categorical.categories?.[0].values ?? []
+    const nodeValues = this.dataView.categorical.values?.[0].values ?? []
+    const highlightedNodeValues = this.dataView.categorical.values?.[0].highlights ?? []
+    
+    const allDataEntries = new Map(nodeIds.map((key, index) => [key, nodeValues[index]]))
+    const highlightedDataEntries = new Map()
+    for (let i = 0; i < nodeIds.length; i++) {
+      if (highlightedNodeValues.length > 0 && highlightedNodeValues[i] != null) {
+        highlightedDataEntries.set(nodeIds[i], highlightedNodeValues[i])
+      }
+    }
+
     this.setGradient(objectsRules)
-    this.renderReactComponent(nodeIds, nodeValues)
+    this.renderReactComponent(allDataEntries, highlightedDataEntries)
   }
 
   public getFormattingModel(): FormattingModel {
