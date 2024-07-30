@@ -6,13 +6,16 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6",
     "sourceMap": true,
     "outDir": "./.tmp/build/",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "declaration": true,
-    "lib": ["es6", "dom", "es2017"],
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["es2021", "dom"],
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
     "paths": {
       "@bi-plugin-utils": ["../../utils"]
     }

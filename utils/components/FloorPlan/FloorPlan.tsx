@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { FC } from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 import './FloorPlan.css'
 
@@ -10,8 +10,7 @@ interface FloorOptions {
   onLoad?: (floorPlan: FloorPlanEngine) => void
 }
 
-const FloorPanel: React.FC<FloorOptions> = props => {
-  const [floorPlan, setFloorPlan] = useState(undefined as FloorPlanEngine);
+const FloorPlan: FC<FloorOptions> = (props): JSX.Element => {
   const floorPlanId = `floor-plan-${new Date().getTime()}`
   const tokenOptions = {
     publishableAccessToken: props.token
@@ -20,15 +19,12 @@ const FloorPanel: React.FC<FloorOptions> = props => {
   const initFloorPlan = () => {
     const container = document.getElementById(floorPlanId)
     if (container) {
-      if (!props.loaded && !floorPlan) {
+      if (!props.loaded) {
         const fpe = new FloorPlanEngine({ container, options: props.startupOptions })
         fpe.loadScene(props.id, tokenOptions).then(() => {
-          if (props.onLoad) props.onLoad(floorPlan)
+          if (props.onLoad) props.onLoad(fpe)
         })
-        setFloorPlan(fpe)
-      } else {
-        if (props.onLoad) props.onLoad(floorPlan)
-      }
+      } 
     }
   }
   setTimeout(initFloorPlan, 500)
@@ -40,4 +36,4 @@ const FloorPanel: React.FC<FloorOptions> = props => {
   )
 }
 
-export default FloorPanel
+export default FloorPlan
