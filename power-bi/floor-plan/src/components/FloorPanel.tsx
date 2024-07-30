@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { FloorPlanEngine } from '@archilogic/floor-plan-sdk'
 
 import {
-  generateGradients,
   getAssetsAndSpaces,
   getSpaceByPosition,
-  hexToRgb,
   getNodeById,
   FloorPlan,
   getGradientColorBySpaceValue
@@ -91,6 +89,10 @@ export const FloorPanel = (props: FloorPanelProps) => {
      setIsFloorPlanLoaded(true)
      setColorMap(generateColorMap(fpe))
   }
+
+  useEffect(() => {
+    setIsFloorPlanLoaded(false)
+  }, [props.floorID, props.publishableToken])
 
   useEffect(() => {
     handleHighlightedNodes()
