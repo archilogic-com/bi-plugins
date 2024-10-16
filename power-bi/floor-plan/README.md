@@ -4,9 +4,9 @@ Archilogic PowerBI plugin
 
 ## Introduction
 
-The 3D Archilogic Floor Plan Power BI plugin is a visualization tool that enables users to create interactive, three-dimensional representations of building floor plans. With this plugin, users can see a 3D model that can be used to filter and analyze data from IoT sensors, as well as other data sources. The 3D model allows users to visualize the location and status of devices and sensors, and to identify potential issues or areas for optimization.
+The Archilogic Floor Plan Power BI plugin is a visualization tool that enables users to create interactive representations of building floor plans. With this plugin, users can see a floor plan view that can be used to filter and analyze data from IoT sensors, as well as other data sources. The 2D model allows users to visualize the location and status of devices and sensors, and to identify potential issues or areas for optimization.
 
-The plugin provides a range of features, including the ability to customize the visualization style, see the total area by a specific program and interact with the model. Overall, the 3D Floor Plan Power BI plugin is a powerful tool for building operators, facility managers, and other professionals who need to monitor and optimize the performance of complex buildings and environments. The plugin uses Floor plan engine SDK, you can find more details in the guide.
+The plugin provides a range of features, including the ability to customize the visualization style, see the total area by a specific program and interact with the model. Overall, the Floor Plan Power BI plugin is a powerful tool for building operators, facility managers, and other professionals who need to monitor and optimize the performance of complex buildings and environments. The plugin uses Floor plan engine SDK, you can find more details in the guide.
 
 ## Getting started
 
